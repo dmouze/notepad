@@ -5,7 +5,8 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import com.example.notepad.composable.LoginPage
+import androidx.navigation.NavHost
+import androidx.navigation.compose.rememberNavController
 import com.example.notepad.ui.theme.NotepadTheme
 
 
@@ -23,7 +24,11 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun Login() {
-        LoginPage()
+        val navController = rememberNavController()
+
+        NavHost(navController = navController, startDestination = "login_page", builder = {
+            composable("login_page", content = {})
+        })
     }
 }
 
