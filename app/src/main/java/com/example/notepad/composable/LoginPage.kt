@@ -34,18 +34,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.notepad.R
 import com.example.notepad.ui.theme.primaryColor
 import com.example.notepad.ui.theme.whiteBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPage() {
+fun LoginPage(navController: NavController) {
 
     val loginValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
     val passwordVisibility = remember { mutableStateOf(false) }
-    val focusRequester:FocusRequester = remember {
+    val focusRequester: FocusRequester = remember {
         FocusRequester()
     }
 
@@ -134,7 +135,11 @@ fun LoginPage() {
                     }
                     Spacer(modifier = Modifier.padding(20.dp))
                     Text(
-                        text = "Create an Account", modifier = Modifier.clickable(onClick = {})
+                        text = "Create an Account", modifier = Modifier.clickable(onClick = {
+                            navController.navigate("register_page") {
+                                launchSingleTop = true
+                            }
+                        })
                     )
                     Spacer(modifier = Modifier.padding(20.dp))
                 }

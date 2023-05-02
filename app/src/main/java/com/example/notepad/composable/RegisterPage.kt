@@ -34,13 +34,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.notepad.R
 import com.example.notepad.ui.theme.primaryColor
 import com.example.notepad.ui.theme.whiteBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterPage() {
+fun RegisterPage(navController: NavController) {
 
     val nameValue = remember { mutableStateOf("") }
     val loginValue = remember { mutableStateOf("") }
@@ -169,7 +170,11 @@ fun RegisterPage() {
                         Spacer(modifier = Modifier.padding(20.dp))
                         Text(
                             text = "Login Instead",
-                            modifier = Modifier.clickable(onClick = {})
+                            modifier = Modifier.clickable(onClick = {
+                                navController.navigate("login_page") {
+                                    launchSingleTop = true
+                                }
+                            })
                         )
                         Spacer(modifier = Modifier.padding(20.dp))
 

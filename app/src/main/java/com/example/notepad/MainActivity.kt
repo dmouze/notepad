@@ -5,8 +5,12 @@ import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.notepad.composable.LoginPage
+import com.example.notepad.composable.RegisterPage
 import com.example.notepad.ui.theme.NotepadTheme
 
 
@@ -26,11 +30,19 @@ class MainActivity : ComponentActivity() {
     fun Login() {
         val navController = rememberNavController()
 
-        NavHost(navController = navController, startDestination = "login_page", builder = {
-            composable("login_page", content = {})
-        })
+        NavHost(
+            navController = navController,
+            startDestination = "login_page", builder = {
+                composable("login_page", content = {
+                    LoginPage(navController = navController)
+                })
+                composable("register_page", content = { RegisterPage(navController = navController)})
+            })
     }
 }
+
+
+
 
 
 
