@@ -11,13 +11,16 @@ import kotlinx.coroutines.flow.Flow
 interface UserDAO {
 
     @Insert
-    suspend fun insertAll(notes: List<User>)
+    suspend fun insert(user: User)
+
+    @Insert
+    suspend fun insertAll(user: List<User>)
 
     @Delete
-    suspend fun delete(notes: List<User>)
+    suspend fun delete(user: List<User>)
 
     @Update
-    suspend fun update(users: User)
+    suspend fun update(user: User)
 
     @Query("SELECT * FROM users_table")
     fun getAll(): Flow<List<User>>

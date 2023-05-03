@@ -1,34 +1,48 @@
 package com.example.notepad
 
-import android.content.Context
+
 import com.example.notepad.data.Note
 import com.example.notepad.data.NoteDAO
-import com.example.notepad.data.NoteDb
-import kotlinx.coroutines.Dispatchers
+import com.example.notepad.data.User
+import com.example.notepad.data.UserDAO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 
-class Repository(context: Context) : NoteDAO{
+class Repository(private val noteDao: NoteDAO, private val userDao: UserDAO) {
 
-    private val dao = NoteDb.getInstance(context).noteDao()
-    override suspend fun insertAll(notes: List<Note>) = withContext(Dispatchers.IO) {
-        dao.insertAll(notes)
+    suspend fun insertUser(user: User) {
+        userDao.insert(user)
     }
 
-    override suspend fun delete(notes: List<Note>) = withContext(Dispatchers.IO){
-        dao.delete(notes)
+    fun getAllUsers(): Flow<List<User>> {
+        return userDao.getAll()
     }
 
-    override suspend fun update(notes: Note) = withContext(Dispatchers.IO){
-        dao.update(notes)
+    // Metody dla tabeli notatek
+    suspend fun insertNotes(notes: List<Note>) {
+        noteDao.insertAll(notes)
     }
 
-    override fun getAll(): Flow<List<Note>> {
-        return dao.getAll()
+    fun getAllNotes(): Flow<List<Note>> {
+        return noteDao.getAll()
     }
 
-    override suspend fun dropDatabase() = withContext(Dispatchers.IO) {
-        dao.dropDatabase()
+    suspend fun deleteNotes(notes: List<Note>) {
+        noteDao.delete(notes)
     }
 
+    suspend fun updateNotes(notes: Note) {
+        noteDao.update(notes)
+    }
+
+    suspend fun deleteAllNotes() {
+        noteDao.dropDatabase()
+    }
+
+    suspend fun deleteAllUsers() {
+        userDao.dropDatabase()
+    }
+
+    suspend fun insertUsers(users: List<User>) {
+        userDao.insertAll(users)
+    }
 }

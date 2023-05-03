@@ -3,24 +3,27 @@ package com.example.notepad
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notepad.data.AppDatabase
 import com.example.notepad.data.Note
+import com.example.notepad.data.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 
-class MainViewModel(app: Application) : AndroidViewModel(app) {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repo = Repository(app.applicationContext)
+    private val noteDao = AppDatabase.getInstance(application).noteDao()
+    private val userDao = AppDatabase.getInstance(application).userDao()
 
     fun getNotes(): Flow<List<Note>> {
-        return repo.getAll()
+        return noteDao.getAll()
     }
 
     init {
-        CoroutineScope(Dispatchers.IO).launch {
-            repo.dropDatabase()
+        viewModelScope.launch(Dispatchers.IO) {
+            AppDatabase.getInstance(application).clearAllTables()
             populateDatabase()
         }
     }
@@ -30,10 +33,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             val time = System.currentTimeMillis()
             val note = Note(noteName = "${time % 100}", noteBody = "${time % 100}")
             CoroutineScope(viewModelScope.coroutineContext).launch {
-                repo.insertAll(listOf(note))
+                noteDao.insertAll(listOf(note))
             }
 
         }
     }
 }
-

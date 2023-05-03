@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.notepad.R
+import com.example.notepad.data.User
 import com.example.notepad.ui.theme.primaryColor
 import com.example.notepad.ui.theme.whiteBackground
 
@@ -127,7 +128,9 @@ fun LoginPage(navController: NavController) {
                     )
                     Spacer(modifier = Modifier.padding(10.dp))
                     Button(
-                        onClick = {}, modifier = Modifier
+                        onClick = { navController.navigate("notes_page") {
+                            launchSingleTop = true
+                        } }, modifier = Modifier
                             .fillMaxWidth(0.6f)
                             .height(50.dp)
                     ) {
