@@ -13,18 +13,18 @@ interface UserDAO {
     @Insert
     suspend fun insert(user: User)
 
-    @Insert
-    suspend fun insertAll(user: List<User>)
-
     @Delete
     suspend fun delete(user: List<User>)
 
     @Update
     suspend fun update(user: User)
 
-    @Query("SELECT * FROM users_table")
+    @Query("SELECT * FROM users WHERE users.id=:id")
+    suspend fun getUserById(id: Int): User?
+
+    @Query("SELECT * FROM users")
     fun getAll(): Flow<List<User>>
 
-    @Query("DELETE FROM users_table")
+    @Query("DELETE FROM users")
     suspend fun dropDatabase()
 }

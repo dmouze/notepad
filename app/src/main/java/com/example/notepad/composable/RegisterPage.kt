@@ -36,9 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.notepad.R
-import com.example.notepad.data.User
+import com.example.notepad.UsersViewModel
 import com.example.notepad.ui.theme.primaryColor
 import com.example.notepad.ui.theme.whiteBackground
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -160,7 +161,9 @@ fun RegisterPage(navController: NavController) {
                             )
                             Spacer(modifier = Modifier.padding(10.dp))
                             Button(
-                                onClick = { },
+                                onClick = {
+
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth(0.8f)
                                     .height(50.dp)
@@ -186,3 +189,5 @@ fun RegisterPage(navController: NavController) {
 
     }
 }
+
+

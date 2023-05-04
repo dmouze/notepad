@@ -28,7 +28,7 @@ import com.example.notepad.data.Note
 import com.example.notepad.ui.theme.NotepadTheme
 
 class NotesList: ComponentActivity() {
-    private val mainVm by viewModels<MainViewModel>()
+    private val mainVm by viewModels<NotesViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -56,7 +56,7 @@ fun NoteList(note: List<Note>){
 @Composable
 fun NotesLazyColumn(note: List<Note>) {
     LazyColumn() {
-        items(items = note, key = { it.uid }){ note ->
+        items(items = note, key = { it.id }){ note ->
             NoteRow(note)
         }
     }
@@ -75,8 +75,8 @@ fun NoteRow(note: Note) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = note.noteName, fontStyle = FontStyle.Italic, fontSize = 18.sp)
-            Text(text = note.noteBody)
+            Text(text = note.title, fontStyle = FontStyle.Italic, fontSize = 18.sp)
+            Text(text = note.note)
 
         }
     }

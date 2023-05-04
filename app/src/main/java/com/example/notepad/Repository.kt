@@ -1,25 +1,35 @@
 package com.example.notepad
 
 
+import android.content.Context
+import com.example.notepad.data.AppDatabase
 import com.example.notepad.data.Note
-import com.example.notepad.data.NoteDAO
 import com.example.notepad.data.User
-import com.example.notepad.data.UserDAO
 import kotlinx.coroutines.flow.Flow
 
-class Repository(private val noteDao: NoteDAO, private val userDao: UserDAO) {
+class Repository(context: Context) {
+
+    private val noteDao = AppDatabase.getInstance(context).noteDao()
+    private val userDao = AppDatabase.getInstance(context).userDao()
 
     suspend fun insertUser(user: User) {
         userDao.insert(user)
+    }
+
+    suspend fun getUserById(id: Int) {
+        userDao.getUserById(id)
     }
 
     fun getAllUsers(): Flow<List<User>> {
         return userDao.getAll()
     }
 
-    // Metody dla tabeli notatek
     suspend fun insertNotes(notes: List<Note>) {
         noteDao.insertAll(notes)
+    }
+
+    suspend fun getNoteById(id: Int) {
+        noteDao.getNoteById(id)
     }
 
     fun getAllNotes(): Flow<List<Note>> {
@@ -42,7 +52,4 @@ class Repository(private val noteDao: NoteDAO, private val userDao: UserDAO) {
         userDao.dropDatabase()
     }
 
-    suspend fun insertUsers(users: List<User>) {
-        userDao.insertAll(users)
-    }
 }

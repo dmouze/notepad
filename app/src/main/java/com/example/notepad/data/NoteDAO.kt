@@ -3,14 +3,17 @@ package com.example.notepad.data
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
+
 @Dao
 interface NoteDAO {
 
-    @Insert
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(notes: List<Note>)
 
     @Delete
@@ -19,9 +22,12 @@ interface NoteDAO {
     @Update
     suspend fun update(notes: Note)
 
-    @Query("SELECT * FROM note_table")
+    @Query("SELECT * FROM notes WHERE notes.id=:id")
+    suspend fun getNoteById(id: Int): Note?
+
+    @Query("SELECT * FROM notes ")
     fun getAll(): Flow<List<Note>>
 
-    @Query("DELETE FROM note_table")
+    @Query("DELETE FROM notes")
     suspend fun dropDatabase()
 }
