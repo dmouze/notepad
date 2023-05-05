@@ -17,7 +17,7 @@ interface NoteDAO {
     suspend fun insertAll(notes: List<Note>)
 
     @Delete
-    suspend fun delete(notes: List<Note>)
+    suspend fun delete(notes: Note)
 
     @Update
     suspend fun update(notes: Note)
@@ -26,8 +26,8 @@ interface NoteDAO {
     suspend fun getNoteById(id: Int): Note?
 
     @Query("SELECT * FROM notes ")
-    fun getAll(): Flow<List<Note>>
+    fun getAllNotes(): Flow<List<Note>>
 
     @Query("DELETE FROM notes")
-    suspend fun dropDatabase()
+    suspend fun deleteAllNotes()
 }

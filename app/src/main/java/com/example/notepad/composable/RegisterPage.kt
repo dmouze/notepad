@@ -1,5 +1,6 @@
 package com.example.notepad.composable
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,22 +36,31 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.notepad.MainViewModel
 import com.example.notepad.R
-import com.example.notepad.UsersViewModel
 import com.example.notepad.ui.theme.primaryColor
 import com.example.notepad.ui.theme.whiteBackground
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterPage(navController: NavController) {
+fun RegisterPage(
+    navController: NavController,
+    mainViewModel: MainViewModel = viewModel()
+) {
 
     val nameValue = remember { mutableStateOf("") }
     val loginValue = remember { mutableStateOf("") }
     val passwordValue = remember { mutableStateOf("") }
     val confirmPasswordValue = remember { mutableStateOf("") }
     val passwordVisibility = remember { mutableStateOf(false) }
+    val confirmPasswordVisibility = remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Box(
@@ -157,12 +168,54 @@ fun RegisterPage(navController: NavController) {
                                 placeholder = { Text(text = "Confirm Password") },
                                 singleLine = true,
                                 modifier = Modifier.fillMaxWidth(0.8f),
+                                trailingIcon = {
+                                    IconButton(onClick = {
+                                        confirmPasswordVisibility.value = !confirmPasswordVisibility.value
+                                    }) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.password_hide),
+                                            contentDescription = null,
+                                            tint = if (confirmPasswordVisibility.value) primaryColor else Color.Gray
+                                        )
+                                    }
+                                },
+                                visualTransformation = if (confirmPasswordVisibility.value) VisualTransformation.None
+                                else PasswordVisualTransformation(),
                                 colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black)
                             )
                             Spacer(modifier = Modifier.padding(10.dp))
                             Button(
                                 onClick = {
+                                    val isPassInv = mainViewModel.isPassInv()
+                                    val isUserNew = mainViewModel.isUserNew()
+                                    val done = mainViewModel.done()
 
+                                    mainViewModel.registerUser(
+                                        nameValue.value,
+                                        loginValue.value,
+                                        passwordValue.value,
+                                        confirmPasswordValue.value
+                                    )
+
+                                    if (isPassInv) {
+                                        Toast.makeText(
+                                            context,
+                                            "Passwords aren't matching, please try to type them again",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    } else if(!isUserNew){
+                                        Toast.makeText(
+                                            context,
+                                            "User with login '${loginValue.value}' already exists! Please choose a different login.",
+                                            Toast.LENGTH_LONG).show()
+                                    } else if (done) {
+                                        Toast.makeText(
+                                            context,
+                                            "User '${nameValue.value}' registered successfully!",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                    }
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth(0.8f)

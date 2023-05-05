@@ -19,12 +19,12 @@ interface UserDAO {
     @Update
     suspend fun update(user: User)
 
-    @Query("SELECT * FROM users WHERE users.id=:id")
-    suspend fun getUserById(id: Int): User?
+    @Query("SELECT * FROM users WHERE users.loginValue=:loginValue")
+    suspend fun getUserByLogin(loginValue: String): User?
 
     @Query("SELECT * FROM users")
-    fun getAll(): Flow<List<User>>
+    fun getAllUsers(): Flow<List<User>>
 
     @Query("DELETE FROM users")
-    suspend fun dropDatabase()
+    suspend fun deleteAllUsers()
 }

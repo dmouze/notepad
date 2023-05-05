@@ -9,25 +9,16 @@ import androidx.room.RoomDatabase
 abstract class AppDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDAO
     abstract fun userDao(): UserDAO
+}
 
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
+object AppDb {
+    private var db: AppDatabase? = null
 
-        fun getInstance(context: Context): AppDatabase {
-            val tempInstance = INSTANCE
-            if (tempInstance != null) {
-                return tempInstance
-            }
-            synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    Constants.DATABASE_NAME
-                ).build()
-                INSTANCE = instance
-                return instance
-            }
+    fun getInstance(context: Context): AppDatabase {
+        if (db == null) {
+            db = Room.databaseBuilder(context, AppDatabase::class.java, Constants.DATABASE_NAME)
+                .build()
         }
+        return db!!
     }
 }
