@@ -42,6 +42,7 @@ import com.example.notepad.MainViewModel
 import com.example.notepad.R
 import com.example.notepad.ui.theme.primaryColor
 import com.example.notepad.ui.theme.whiteBackground
+import kotlinx.coroutines.runBlocking
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +59,15 @@ fun RegisterPage(
     val passwordVisibility = remember { mutableStateOf(false) }
     val confirmPasswordVisibility = remember { mutableStateOf(false) }
 
+    val nameErrorState = remember { mutableStateOf(false) }
+    val loginErrorState = remember { mutableStateOf(false) }
+    val passwordErrorState = remember { mutableStateOf(false) }
+    val confirmPasswordErrorState = remember { mutableStateOf(false) }
+
     val context = LocalContext.current
+
+    var userExist = false
+
 
 
 
@@ -72,8 +81,9 @@ fun RegisterPage(
 
             Column(
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+                horizontalAlignment = Alignment.CenterHorizontally,
+
+                ) {
                 Text(
                     text = "REGISTER",
                     fontSize = 60.sp,
@@ -116,11 +126,25 @@ fun RegisterPage(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             OutlinedTextField(
                                 value = loginValue.value,
-                                onValueChange = { loginValue.value = it },
+                                onValueChange = {
+                                    if (loginErrorState.value) {
+                                        loginErrorState.value = false
+                                    }
+                                    loginValue.value = it
+                                    runBlocking {
+                                        userExist =
+                                            mainViewModel.checkIfUserExists(loginValue.value)
+                                    }
+                                },
+
+                                isError = loginErrorState.value,
                                 label = {
-                                    Text(
-                                        text = "Login"
-                                    )
+
+                                    if (loginErrorState.value) {
+                                        Text(text = "Required", color = Color.Red)
+                                    } else {
+                                        Text(text = "Login")
+                                    }
                                 },
                                 placeholder = { Text(text = "Login") },
                                 singleLine = true,
@@ -130,8 +154,22 @@ fun RegisterPage(
 
                             OutlinedTextField(
                                 value = nameValue.value,
-                                onValueChange = { nameValue.value = it },
-                                label = { Text(text = "Name") },
+                                onValueChange = {
+                                    if (nameErrorState.value) {
+                                        nameErrorState.value = false
+                                    }
+                                    nameValue.value = it
+                                },
+
+                                isError = nameErrorState.value,
+                                label = {
+
+                                    if (nameErrorState.value) {
+                                        Text(text = "Required", color = Color.Red)
+                                    } else {
+                                        Text(text = "Name")
+                                    }
+                                },
                                 placeholder = { Text(text = "Name") },
                                 singleLine = true,
                                 modifier = Modifier.fillMaxWidth(0.8f),
@@ -140,8 +178,20 @@ fun RegisterPage(
 
                             OutlinedTextField(
                                 value = passwordValue.value,
-                                onValueChange = { passwordValue.value = it },
-                                label = { Text(text = "Password") },
+                                onValueChange = {
+                                    if (passwordErrorState.value) {
+                                        passwordErrorState.value = false
+                                    }
+                                    passwordValue.value = it
+                                },
+                                isError = passwordErrorState.value,
+                                label = {
+                                    if (passwordErrorState.value) {
+                                        Text(text = "Required", color = Color.Red)
+                                    } else {
+                                        Text(text = "Password")
+                                    }
+                                },
                                 placeholder = { Text(text = "Password") },
                                 singleLine = true,
                                 modifier = Modifier.fillMaxWidth(0.8f),
@@ -163,14 +213,27 @@ fun RegisterPage(
 
                             OutlinedTextField(
                                 value = confirmPasswordValue.value,
-                                onValueChange = { confirmPasswordValue.value = it },
-                                label = { Text(text = "Confirm Password") },
-                                placeholder = { Text(text = "Confirm Password") },
+                                onValueChange = {
+                                    if (confirmPasswordErrorState.value) {
+                                        confirmPasswordErrorState.value = false
+                                    }
+                                    confirmPasswordValue.value = it
+                                },
+                                isError = confirmPasswordErrorState.value,
+                                label = {
+                                    if (confirmPasswordErrorState.value) {
+                                        Text(text = "Required", color = Color.Red)
+                                    } else {
+                                        Text(text = "Password")
+                                    }
+                                },
+                                placeholder = { Text(text = "Password") },
                                 singleLine = true,
                                 modifier = Modifier.fillMaxWidth(0.8f),
                                 trailingIcon = {
                                     IconButton(onClick = {
-                                        confirmPasswordVisibility.value = !confirmPasswordVisibility.value
+                                        confirmPasswordVisibility.value =
+                                            !confirmPasswordVisibility.value
                                     }) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.password_hide),
@@ -186,35 +249,34 @@ fun RegisterPage(
                             Spacer(modifier = Modifier.padding(10.dp))
                             Button(
                                 onClick = {
-                                    val isPassInv = mainViewModel.isPassInv()
-                                    val isUserNew = mainViewModel.isUserNew()
-                                    val done = mainViewModel.done()
-
-                                    mainViewModel.registerUser(
-                                        nameValue.value,
-                                        loginValue.value,
-                                        passwordValue.value,
-                                        confirmPasswordValue.value
-                                    )
-
-                                    if (isPassInv) {
+                                    runBlocking {
+                                        userExist =
+                                            mainViewModel.checkIfUserExists(loginValue.value)
+                                    }
+                                    if (passwordValue.value != confirmPasswordValue.value) {
                                         Toast.makeText(
                                             context,
                                             "Passwords aren't matching, please try to type them again",
                                             Toast.LENGTH_LONG
                                         ).show()
-                                    } else if(!isUserNew){
+                                    } else if (userExist) {
                                         Toast.makeText(
                                             context,
                                             "User with login '${loginValue.value}' already exists! Please choose a different login.",
-                                            Toast.LENGTH_LONG).show()
-                                    } else if (done) {
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    } else {
+                                        mainViewModel.registerUser(
+                                            nameValue.value,
+                                            loginValue.value,
+                                            passwordValue.value,
+                                            confirmPasswordValue.value
+                                        )
                                         Toast.makeText(
                                             context,
                                             "User '${nameValue.value}' registered successfully!",
                                             Toast.LENGTH_LONG
                                         ).show()
-
                                     }
                                 },
                                 modifier = Modifier
@@ -242,5 +304,6 @@ fun RegisterPage(
 
     }
 }
+
 
 

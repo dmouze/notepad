@@ -28,7 +28,7 @@
 //import com.example.notepad.ui.theme.NotepadTheme
 //
 //class NotesList: ComponentActivity() {
-//    private val mainVm by viewModels<MainViewModel>()
+//    private val mainVm by viewModels<com.example.notepad.MainViewModel>()
 //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
 //        setContent {
