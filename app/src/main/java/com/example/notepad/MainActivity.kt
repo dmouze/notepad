@@ -34,10 +34,11 @@ class MainActivity : ComponentActivity() {
         NavHost(
             navController = navController,
             startDestination = "login_page", builder = {
-                composable("login_page", content = {
-                    LoginPage(navController = navController)
+                composable("login_page", content = {LoginPage(navController = navController)
                 })
-                composable("register_page", content = { RegisterPage(navController = navController)})
+                composable(
+                    "register_page",
+                    content = { RegisterPage(navController = navController) })
                 composable("notes_page", content = { NotesPage(navController = navController) })
             })
     }

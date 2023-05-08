@@ -47,6 +47,10 @@ class Repository(context: Context): UserDAO,NoteDAO {
         return userDao.getUserByLogin(loginValue)
     }
 
+    override suspend fun getUserByLoginAndPassword(loginValue: String, passwordValue: String): User? {
+        return userDao.getUserByLoginAndPassword(loginValue, passwordValue)
+    }
+
     override fun getAllUsers(): Flow<List<User>> {
         return userDao.getAllUsers()
     }

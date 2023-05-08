@@ -1,6 +1,7 @@
 package com.example.notepad
 
 import android.app.Application
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notepad.data.User
@@ -15,17 +16,40 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     private val repo = Repository(app.applicationContext)
     private var userExist = false
     private var done = false
+    private val currentUser = mutableStateOf<User?>(null)
 
     fun getAllUsers(): Flow<List<User>> {
         return repo.getAllUsers().flowOn(Dispatchers.IO)
     }
 
+    fun getCurrentUser(): User? {
+        return currentUser.value
+    }
 
     suspend fun checkIfUserExists(loginValue: String): Boolean {
         return withContext(Dispatchers.IO) {
             val user = repo.getUserByLogin(loginValue)
             user != null
         }
+    }
+    private suspend fun getUserByLoginAndPassword(loginValue: String, passwordValue: String): User? {
+        return repo.getUserByLoginAndPassword(loginValue, passwordValue)
+    }
+
+    suspend fun login(loginValue: String, passwordValue: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            val user = getUserByLoginAndPassword(loginValue, passwordValue)
+            if (user != null) {
+                currentUser.value = user
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    fun logout() {
+        currentUser.value = null
     }
 
 

@@ -66,7 +66,7 @@ fun RegisterPage(
 
     val context = LocalContext.current
 
-    var userExist = false
+    var userExist : Boolean
 
 
 
