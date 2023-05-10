@@ -1,6 +1,7 @@
 package com.example.notepad.composable
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,12 +19,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -35,7 +38,6 @@ import androidx.navigation.NavController
 import com.example.notepad.MainViewModel
 import com.example.notepad.R
 import com.example.notepad.ui.theme.primaryColor
-import com.example.notepad.ui.theme.whiteBackground
 import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -54,14 +56,19 @@ fun LoginPage(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.login), contentDescription = null,
+            modifier = Modifier.fillMaxWidth()
+                .align(Alignment.TopCenter),
+            contentScale = ContentScale.Crop
+        )
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.80f)
-                .background(whiteBackground)
-                .padding(10.dp)
+                .fillMaxHeight(0.45f)
+                .background(Color.White)
         ) {
             item {
                 // Dodaj pola tekstowe dla loginu i hasła
@@ -71,7 +78,8 @@ fun LoginPage(
                     label = { Text(text = "Login name") },
                     placeholder = { Text(text = "Login name") },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth(0.88f)
+                    modifier = Modifier.fillMaxWidth(0.88f),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black)
                 )
                 OutlinedTextField(
                     value = passwordState.value,
@@ -90,11 +98,11 @@ fun LoginPage(
                     singleLine = true,
                     visualTransformation = if (passwordVisibility.value) VisualTransformation.None
                     else PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth(0.88f)
+                    modifier = Modifier.fillMaxWidth(0.88f),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black)
                 )
                 Spacer(modifier = Modifier.padding(10.dp))
 
-                // Dodaj przycisk logowania
                 Button(
                     onClick = {
                         // Sprawdź, czy użytkownik istnieje
@@ -102,12 +110,25 @@ fun LoginPage(
                             mainViewModel.checkIfUserExists(loginState.value)
                         }
                         if (userExists) {
-                            // Wywołaj funkcję logowania z ViewModel
-                            runBlocking {
-                                mainViewModel.login(loginState.value, passwordState.value)
+                            val validPassword = runBlocking {
+                                mainViewModel.checkPassword(loginState.value, passwordState.value)
                             }
-                            navController.navigate("notes_page") {
-                                launchSingleTop = true
+                            // Sprawdź, czy hasło zostało uzupełnione i czy zgadza się z użytkownikiem
+                            if (passwordState.value.isNotEmpty() && validPassword) {
+                                // Wywołaj funkcję logowania z ViewModel
+                                runBlocking {
+                                    mainViewModel.login(loginState.value, passwordState.value)
+                                }
+                                navController.navigate("notes_page") {
+                                    launchSingleTop = true
+                                }
+                            } else {
+                                // Wyświetl informację o błędzie
+                                Toast.makeText(
+                                    context,
+                                    "Incorrect login or password.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         } else {
                             // Wyświetl informację o błędzie
@@ -127,7 +148,7 @@ fun LoginPage(
 
                 Spacer(modifier = Modifier.padding(20.dp))
 
-                // Dodaj link do strony rejestracji
+                // Dodaj odnośnik do strony rejestracji
                 Text(
                     text = "Create an Account",
                     modifier = Modifier.clickable(onClick = {

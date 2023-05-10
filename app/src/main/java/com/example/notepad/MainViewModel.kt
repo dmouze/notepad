@@ -26,6 +26,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         return currentUser.value
     }
 
+    suspend fun checkPassword(username: String, password: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            val user = getUserByLoginAndPassword(username, password)
+            user != null
+        }
+    }
+
     suspend fun checkIfUserExists(loginValue: String): Boolean {
         return withContext(Dispatchers.IO) {
             val user = repo.getUserByLogin(loginValue)
