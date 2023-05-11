@@ -1,6 +1,7 @@
 package com.example.notepad.composable.login_register
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -45,6 +46,7 @@ class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     suspend fun login(loginValue: String, passwordValue: String): Boolean {
+        Log.d("LoginRegisterViewModel", "login function called")
         return withContext(Dispatchers.IO) {
             val user = getUserByLoginAndPassword(loginValue, passwordValue)
             if (user != null) {

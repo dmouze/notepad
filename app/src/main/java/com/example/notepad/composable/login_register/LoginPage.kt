@@ -1,5 +1,6 @@
 package com.example.notepad.composable.login_register
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -84,7 +85,9 @@ fun LoginPage(
                     value = passwordState.value,
                     onValueChange = { passwordState.value = it },
                     trailingIcon = {
-                        IconButton(onClick = { }) {
+                        IconButton(onClick = {
+                            passwordVisibility.value = !passwordVisibility.value
+                        }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.password_hide),
                                 contentDescription = null,
@@ -142,7 +145,7 @@ fun LoginPage(
                         .fillMaxWidth(0.6f)
                         .height(50.dp)
                 ) {
-                    Text(text = "Sign In", fontSize = 20.sp)
+                    Text(text = "Sign In", fontSize = 20.sp, color = Color.White)
                 }
 
                 Spacer(modifier = Modifier.padding(20.dp))

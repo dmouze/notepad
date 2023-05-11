@@ -69,8 +69,6 @@ fun RegisterPage(
 
 
 
-
-
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
         Box(
             modifier = Modifier
@@ -83,7 +81,7 @@ fun RegisterPage(
                 painter = painterResource(id = R.drawable.register), contentDescription = null,
                 modifier = Modifier
                     .align(Alignment.TopCenter),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillBounds
             )
         }
 
@@ -305,10 +303,10 @@ fun RegisterPage(
                                 }
                             },
                             modifier = Modifier
-                                .fillMaxWidth(0.8f)
+                                .fillMaxWidth(0.6f)
                                 .height(50.dp)
                         ) {
-                            Text(text = "Sign Up", fontSize = 20.sp)
+                            Text(text = "Sign Up", fontSize = 20.sp, color = Color.White)
                         }
                     }
                     Spacer(modifier = Modifier.padding(20.dp))
