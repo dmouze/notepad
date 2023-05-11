@@ -1,4 +1,4 @@
-package com.example.notepad.composable
+package com.example.notepad.composable.note_main_page
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -16,13 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.notepad.MainViewModel
+import com.example.notepad.composable.login_register.LoginRegisterViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun NotesPage(navController: NavController, mainViewModel: MainViewModel = viewModel()) {
-    val users = mainViewModel.getAllUsers().collectAsState(initial = emptyList()).value
+fun NotesPage(navController: NavController, loginRegisterViewModel: LoginRegisterViewModel = viewModel()) {
+    val users = loginRegisterViewModel.getAllUsers().collectAsState(initial = emptyList()).value
     Box{
 
         Column(

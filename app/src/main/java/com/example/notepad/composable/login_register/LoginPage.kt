@@ -1,4 +1,4 @@
-package com.example.notepad.composable
+package com.example.notepad.composable.login_register
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.notepad.MainViewModel
 import com.example.notepad.R
 import com.example.notepad.ui.theme.primaryColor
 import kotlinx.coroutines.runBlocking
@@ -44,7 +43,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun LoginPage(
     navController: NavController,
-    mainViewModel: MainViewModel = viewModel()
+    loginRegisterViewModel: LoginRegisterViewModel = viewModel()
 ) {
     // Utwórz stan dla pola login i hasła
     val loginState = remember { mutableStateOf("") }
@@ -107,17 +106,17 @@ fun LoginPage(
                     onClick = {
                         // Sprawdź, czy użytkownik istnieje
                         val userExists = runBlocking {
-                            mainViewModel.checkIfUserExists(loginState.value)
+                            loginRegisterViewModel.checkIfUserExists(loginState.value)
                         }
                         if (userExists) {
                             val validPassword = runBlocking {
-                                mainViewModel.checkPassword(loginState.value, passwordState.value)
+                                loginRegisterViewModel.checkPassword(loginState.value, passwordState.value)
                             }
                             // Sprawdź, czy hasło zostało uzupełnione i czy zgadza się z użytkownikiem
                             if (passwordState.value.isNotEmpty() && validPassword) {
                                 // Wywołaj funkcję logowania z ViewModel
                                 runBlocking {
-                                    mainViewModel.login(loginState.value, passwordState.value)
+                                    loginRegisterViewModel.login(loginState.value, passwordState.value)
                                 }
                                 navController.navigate("notes_page") {
                                     launchSingleTop = true

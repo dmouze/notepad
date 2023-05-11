@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.notepad.composable.LoginPage
-import com.example.notepad.composable.NotesPage
-import com.example.notepad.composable.RegisterPage
+import com.example.notepad.composable.login_register.LoginPage
+import com.example.notepad.composable.note_main_page.NotesPage
+import com.example.notepad.composable.login_register.RegisterPage
 import com.example.notepad.ui.theme.NotepadTheme
 
 
@@ -34,7 +34,8 @@ class MainActivity : ComponentActivity() {
         NavHost(
             navController = navController,
             startDestination = "login_page", builder = {
-                composable("login_page", content = {LoginPage(navController = navController)
+                composable("login_page", content = {
+                    LoginPage(navController = navController)
                 })
                 composable(
                     "register_page",

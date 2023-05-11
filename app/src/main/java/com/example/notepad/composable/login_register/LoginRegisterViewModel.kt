@@ -1,9 +1,10 @@
-package com.example.notepad
+package com.example.notepad.composable.login_register
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notepad.data.Repository
 import com.example.notepad.data.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainViewModel(app: Application) : AndroidViewModel(app) {
+class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
 
     private val repo = Repository(app.applicationContext)
     private var userExist = false

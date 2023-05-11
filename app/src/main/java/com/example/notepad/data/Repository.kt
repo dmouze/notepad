@@ -1,12 +1,7 @@
-package com.example.notepad
+package com.example.notepad.data
 
 
 import android.content.Context
-import com.example.notepad.data.AppDb
-import com.example.notepad.data.Note
-import com.example.notepad.data.NoteDAO
-import com.example.notepad.data.User
-import com.example.notepad.data.UserDAO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext

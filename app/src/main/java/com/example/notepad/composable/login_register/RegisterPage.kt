@@ -1,4 +1,4 @@
-package com.example.notepad.composable
+package com.example.notepad.composable.login_register
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.notepad.MainViewModel
 import com.example.notepad.R
 import com.example.notepad.ui.theme.primaryColor
 import kotlinx.coroutines.runBlocking
@@ -48,7 +47,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun RegisterPage(
     navController: NavController,
-    mainViewModel: MainViewModel = viewModel()
+    loginRegisterViewModel: LoginRegisterViewModel = viewModel()
 ) {
 
     val nameValue = remember { mutableStateOf("") }
@@ -123,7 +122,7 @@ fun RegisterPage(
                                 loginValue.value = it
                                 runBlocking {
                                     userExist =
-                                        mainViewModel.checkIfUserExists(loginValue.value)
+                                        loginRegisterViewModel.checkIfUserExists(loginValue.value)
                                 }
                             },
 
@@ -241,7 +240,7 @@ fun RegisterPage(
                             onClick = {
                                 runBlocking {
                                     userExist =
-                                        mainViewModel.checkIfUserExists(loginValue.value)
+                                        loginRegisterViewModel.checkIfUserExists(loginValue.value)
                                 }
 
                                 if (!loginErrorState.value && !nameErrorState.value && !passwordErrorState.value && !confirmPasswordErrorState.value){
@@ -291,7 +290,7 @@ fun RegisterPage(
                                     ).show()
                                 } else {
                                     if (allFields) {
-                                        mainViewModel.registerUser(
+                                        loginRegisterViewModel.registerUser(
                                             nameValue.value,
                                             loginValue.value,
                                             passwordValue.value,
