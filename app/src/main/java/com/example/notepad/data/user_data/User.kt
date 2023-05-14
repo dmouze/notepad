@@ -1,9 +1,10 @@
-package com.example.notepad.data
+package com.example.notepad.data.user_data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.notepad.Constants
 
 
 @Entity(tableName = Constants.USERS_TABLE_NAME, indices = [Index(value = ["id"], unique = true)])

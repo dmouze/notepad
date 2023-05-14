@@ -1,4 +1,4 @@
-package com.example.notepad.composable.note_main_page
+package com.example.notepad.composable.notes
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

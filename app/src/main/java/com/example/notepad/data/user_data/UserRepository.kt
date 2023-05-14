@@ -1,30 +1,13 @@
-package com.example.notepad.data
-
+package com.example.notepad.data.user_data
 
 import android.content.Context
+import com.example.notepad.data.AppDb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class Repository(context: Context): UserDAO,NoteDAO {
-
-    private val noteDao = AppDb.getInstance(context).noteDao()
+class UserRepository(context: Context): UserDAO{
     private val userDao = AppDb.getInstance(context).userDao()
-    override suspend fun insertAll(notes: List<Note>) = withContext(Dispatchers.IO) {
-        noteDao.insertAll(notes)
-    }
-
-    override suspend fun delete(notes: Note) = withContext(Dispatchers.IO) {
-        noteDao.delete(notes)
-    }
-
-    override suspend fun update(notes: Note) = withContext(Dispatchers.IO) {
-        noteDao.update(notes)
-    }
-
-    override suspend fun getNoteById(id: Int): Note? {
-        return noteDao.getNoteById(id)
-    }
 
     override suspend fun insert(user: User) = withContext(Dispatchers.IO) {
         userDao.insert(user)
@@ -50,17 +33,8 @@ class Repository(context: Context): UserDAO,NoteDAO {
         return userDao.getAllUsers()
     }
 
-    override fun getAllNotes(): Flow<List<Note>> {
-        return noteDao.getAllNotes()
-    }
 
     override suspend fun deleteAllUsers() = withContext(Dispatchers.IO) {
         userDao.deleteAllUsers()
     }
-
-    override suspend fun deleteAllNotes() = withContext(Dispatchers.IO) {
-        noteDao.deleteAllNotes()
-    }
-
-
 }

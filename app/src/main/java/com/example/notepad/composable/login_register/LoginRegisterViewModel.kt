@@ -1,11 +1,10 @@
 package com.example.notepad.composable.login_register
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.notepad.data.Repository
-import com.example.notepad.data.User
+import com.example.notepad.data.user_data.User
+import com.example.notepad.data.user_data.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +14,7 @@ import kotlinx.coroutines.withContext
 
 class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val repo = Repository(app.applicationContext)
+    private val repo = UserRepository(app.applicationContext)
     private var userExist = false
     private val currentUser = MutableStateFlow<User?>(null)
     val userFlow = currentUser.asStateFlow()
@@ -49,10 +48,6 @@ class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     suspend fun login(loginValue: String, passwordValue: String): Boolean {
-        Log.d(
-            "login",
-            "login function called"
-        )
         return withContext(Dispatchers.IO) {
             val user = getUserByLoginAndPassword(loginValue, passwordValue)
             if (user != null) {
@@ -61,10 +56,6 @@ class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
                     currentUser.asStateFlow()
                 }
                 println(currentUser.value)
-                Log.d(
-                    "login",
-                    "login function called working"
-                )
                 true
             } else {
                 false

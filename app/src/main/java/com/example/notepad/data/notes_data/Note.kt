@@ -1,9 +1,10 @@
-package com.example.notepad.data
+package com.example.notepad.data.notes_data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.notepad.Constants
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

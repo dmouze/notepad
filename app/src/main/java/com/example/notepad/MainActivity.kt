@@ -1,6 +1,6 @@
 package com.example.notepad
 
-import com.example.notepad.composable.note_main_page.NotesPage
+import com.example.notepad.composable.notes.NotesPage
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity

@@ -1,10 +1,11 @@
-package com.example.notepad.data
+package com.example.notepad.data.user_data
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.example.notepad.data.user_data.User
 import kotlinx.coroutines.flow.Flow
 
 @Dao

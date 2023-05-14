@@ -4,6 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.notepad.Constants
+import com.example.notepad.data.notes_data.Note
+import com.example.notepad.data.notes_data.NoteDAO
+import com.example.notepad.data.user_data.User
+import com.example.notepad.data.user_data.UserDAO
 
 @Database(entities = [Note::class, User::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
