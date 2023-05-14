@@ -23,7 +23,7 @@ class Repository(context: Context): UserDAO,NoteDAO {
     }
 
     override suspend fun getNoteById(id: Int): Note? {
-       return noteDao.getNoteById(id)
+        return noteDao.getNoteById(id)
     }
 
     override suspend fun insert(user: User) = withContext(Dispatchers.IO) {

@@ -2,14 +2,14 @@ package com.example.notepad.composable.login_register
 
 import android.app.Application
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notepad.data.Repository
 import com.example.notepad.data.User
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -17,16 +17,8 @@ class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
 
     private val repo = Repository(app.applicationContext)
     private var userExist = false
-    private var done = false
-    private val currentUser = mutableStateOf<User?>(null)
-
-    fun getAllUsers(): Flow<List<User>> {
-        return repo.getAllUsers().flowOn(Dispatchers.IO)
-    }
-
-    fun getCurrentUser(): User? {
-        return currentUser.value
-    }
+    private val currentUser = MutableStateFlow<User?>(null)
+    val userFlow = currentUser.asStateFlow()
 
     suspend fun checkPassword(username: String, password: String): Boolean {
         return withContext(Dispatchers.IO) {
@@ -35,22 +27,44 @@ class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    private fun setCurrentUser(user: User) {
+        currentUser.value = user
+    }
+
+    fun getCurrentUser(): StateFlow<User?> {
+        return currentUser
+    }
+
     suspend fun checkIfUserExists(loginValue: String): Boolean {
         return withContext(Dispatchers.IO) {
             val user = repo.getUserByLogin(loginValue)
             user != null
         }
     }
-    private suspend fun getUserByLoginAndPassword(loginValue: String, passwordValue: String): User? {
+    private suspend fun getUserByLoginAndPassword(
+        loginValue: String,
+        passwordValue: String
+    ): User? {
         return repo.getUserByLoginAndPassword(loginValue, passwordValue)
     }
 
     suspend fun login(loginValue: String, passwordValue: String): Boolean {
-        Log.d("LoginRegisterViewModel", "login function called")
+        Log.d(
+            "login",
+            "login function called"
+        )
         return withContext(Dispatchers.IO) {
             val user = getUserByLoginAndPassword(loginValue, passwordValue)
             if (user != null) {
-                currentUser.value = user
+                setCurrentUser(user)
+                userFlow.apply {
+                    currentUser.asStateFlow()
+                }
+                println(currentUser.value)
+                Log.d(
+                    "login",
+                    "login function called working"
+                )
                 true
             } else {
                 false
@@ -70,7 +84,6 @@ class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
         confirmPasswordValue: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            done = false
             if (passwordValue == confirmPasswordValue) {
                 userExist = false
                 val user = User(
@@ -79,11 +92,9 @@ class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
                     passwordValue = passwordValue
                 )
                 repo.insert(user)
-                done = true
             } else {
                 userExist = true
             }
         }
     }
 }
-

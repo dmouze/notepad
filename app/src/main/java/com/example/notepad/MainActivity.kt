@@ -1,5 +1,6 @@
 package com.example.notepad
 
+import com.example.notepad.composable.note_main_page.NotesPage
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -9,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.notepad.composable.login_register.LoginPage
-import com.example.notepad.composable.note_main_page.NotesPage
 import com.example.notepad.composable.login_register.RegisterPage
 import com.example.notepad.ui.theme.NotepadTheme
 

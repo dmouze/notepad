@@ -1,6 +1,5 @@
 package com.example.notepad.composable.login_register
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -53,12 +52,15 @@ fun LoginPage(
     val context = LocalContext.current
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
         contentAlignment = Alignment.BottomCenter
     ) {
         Image(
             painter = painterResource(id = R.drawable.login), contentDescription = null,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .align(Alignment.TopCenter),
             contentScale = ContentScale.Crop
         )
@@ -74,7 +76,10 @@ fun LoginPage(
                 // Dodaj pola tekstowe dla loginu i hasła
                 OutlinedTextField(
                     value = loginState.value,
-                    onValueChange = { loginState.value = it },
+                    onValueChange = {
+                        loginState.value = it
+                        loginRegisterViewModel.logout()
+                    },
                     label = { Text(text = "Login name") },
                     placeholder = { Text(text = "Login name") },
                     singleLine = true,
@@ -83,7 +88,10 @@ fun LoginPage(
                 )
                 OutlinedTextField(
                     value = passwordState.value,
-                    onValueChange = { passwordState.value = it },
+                    onValueChange = {
+                        passwordState.value = it
+                        loginRegisterViewModel.logout()
+                    },
                     trailingIcon = {
                         IconButton(onClick = {
                             passwordVisibility.value = !passwordVisibility.value
@@ -113,16 +121,24 @@ fun LoginPage(
                         }
                         if (userExists) {
                             val validPassword = runBlocking {
-                                loginRegisterViewModel.checkPassword(loginState.value, passwordState.value)
+                                loginRegisterViewModel.checkPassword(
+                                    loginState.value,
+                                    passwordState.value
+                                )
                             }
                             // Sprawdź, czy hasło zostało uzupełnione i czy zgadza się z użytkownikiem
                             if (passwordState.value.isNotEmpty() && validPassword) {
                                 // Wywołaj funkcję logowania z ViewModel
                                 runBlocking {
-                                    loginRegisterViewModel.login(loginState.value, passwordState.value)
+                                    loginRegisterViewModel.login(
+                                        loginState.value,
+                                        passwordState.value
+                                    )
                                 }
+
                                 navController.navigate("notes_page") {
                                     launchSingleTop = true
+
                                 }
                             } else {
                                 // Wyświetl informację o błędzie
@@ -165,3 +181,5 @@ fun LoginPage(
         }
     }
 }
+
+
