@@ -56,7 +56,7 @@ fun NoteDetails(noteId: Int, navController: NavController, viewModel: NotesViewM
                     AppBar(
                         title = note.value.title,
                         onIconClick = {
-                            navController.navigate(Constants.noteEditNavigation(note.value.id))
+                            navController.navigate(Constants.noteDetailNavigation(note.value.id ?: 0))
                         },
                         icon = {
                             Icon(
