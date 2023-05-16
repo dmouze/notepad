@@ -13,13 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +38,6 @@ import com.example.notepad.R
 import com.example.notepad.ui.theme.primaryColor
 import kotlinx.coroutines.runBlocking
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPage(
     navController: NavController,
@@ -136,7 +134,7 @@ fun LoginPage(
                                     )
                                 }
 
-                                navController.navigate("notes_page") {
+                                navController.navigate("notelist_page") {
                                     launchSingleTop = true
 
                                 }

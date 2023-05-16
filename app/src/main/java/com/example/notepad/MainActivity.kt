@@ -1,30 +1,46 @@
 package com.example.notepad
 
-import com.example.notepad.composable.notes.NotesPage
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.notepad.composable.login_register.LoginPage
 import com.example.notepad.composable.login_register.RegisterPage
+import com.example.notepad.composable.notes.CreateNote
+import com.example.notepad.composable.notes.EditNote
+import com.example.notepad.composable.notes.NoteDetails
+import com.example.notepad.composable.notes.NotesPage
+import com.example.notepad.composable.notes.NotesViewModel
+import com.example.notepad.composable.notes.NotesViewModelFactory
+import com.example.notepad.composable.notes.notes_list.NoteList
+import com.example.notepad.data.AppDb
 import com.example.notepad.ui.theme.NotepadTheme
 
 
 @Suppress("DEPRECATION")
 class MainActivity : ComponentActivity() {
+    private lateinit var notesViewModel: NotesViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         super.onCreate(savedInstanceState)
+
+        val noteDao = AppDb.getInstance(this).noteDao()
+        val notesViewModelFactory = NotesViewModelFactory(noteDao)
+        notesViewModel = ViewModelProvider(this, notesViewModelFactory)[NotesViewModel::class.java]
+
         setContent {
             NotepadTheme {
                 Login()
             }
         }
-
     }
 
     @Composable
@@ -33,20 +49,55 @@ class MainActivity : ComponentActivity() {
 
         NavHost(
             navController = navController,
-            startDestination = "login_page", builder = {
-                composable("login_page", content = {
+            startDestination = "login_page",
+            builder = {
+                composable("login_page") {
                     LoginPage(navController = navController)
-                })
+                }
+                composable("register_page") {
+                    RegisterPage(navController = navController)
+                }
+                composable("notes_page") {
+                    NotesPage(navController = navController)
+                }
+                composable("notelist_page") {
+                    NoteList(navController = navController, notesViewModel)
+                }
                 composable(
-                    "register_page",
-                    content = { RegisterPage(navController = navController) })
-                composable("notes_page", content = { NotesPage(navController = navController) })
-            })
+                    "createnote_page",
+                ) {
+                    CreateNote(navController = navController, notesViewModel)
+                }
+                composable(
+                    "notesdetail_page",
+                    arguments = listOf(navArgument("noteId") {
+                        type = NavType.IntType
+                    })
+                ) { backStackEntry ->
+                    backStackEntry.arguments?.getInt("noteId")
+                        ?.let { noteId ->
+                            NoteDetails(
+                                noteId = noteId,
+                                navController = navController
+                            )
+                        }
+                }
+                composable(
+                    "editnote_page",
+                    arguments = listOf(navArgument("noteId") {
+                        type = NavType.IntType
+                    })
+                ) { backStackEntry ->
+                    backStackEntry.arguments?.getInt("noteId")
+                        ?.let { noteId ->
+                            EditNote(
+                                noteId = noteId,
+                                navController = navController,
+                                notesViewModel
+                            )
+                        }
+                }
+            }
+        )
     }
 }
-
-
-
-
-
-

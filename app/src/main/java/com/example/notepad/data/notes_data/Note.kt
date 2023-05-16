@@ -17,6 +17,12 @@ data class Note(
     @ColumnInfo(name = "dateUpdated") val dateUpdated: String = getDateCreated()
     )
 
-fun getDateCreated(): String{
+fun getDateCreated(): String {
     return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))
+}
+
+fun Note.getDay(): String {
+    if (this.dateUpdated.isEmpty()) return ""
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
+    return LocalDateTime.parse(this.dateUpdated, formatter).toLocalDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 }

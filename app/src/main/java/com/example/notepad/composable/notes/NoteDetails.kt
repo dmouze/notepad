@@ -4,12 +4,11 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -33,10 +32,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun NoteDetails(noteId: Int, navController: NavController, viewModel: NotesViewModel) {
+fun NoteDetails(
+    noteId: Int,
+    navController: NavController,
+    viewModel: NotesViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     val scope = rememberCoroutineScope()
 
     val note = remember {
@@ -50,13 +52,17 @@ fun NoteDetails(noteId: Int, navController: NavController, viewModel: NotesViewM
     }
 
     NotepadTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             Scaffold(
                 topBar = {
                     AppBar(
                         title = note.value.title,
                         onIconClick = {
-                            navController.navigate(Constants.noteDetailNavigation(note.value.id ?: 0))
+                            navController.navigate(
+                                Constants.noteDetailNavigation(
+                                    note.value.id
+                                )
+                            )
                         },
                         icon = {
                             Icon(

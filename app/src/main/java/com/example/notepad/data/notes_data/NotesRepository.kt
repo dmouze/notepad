@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import com.example.notepad.data.AppDb
 
-class NotesRepository(context: Context) : NoteDAO {
+class  NotesRepository(context: Context) : NoteDAO {
     private val noteDao = AppDb.getInstance(context).noteDao()
 
     override suspend fun getNoteById(id: Int): Note? {
