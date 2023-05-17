@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">_notepad</string>
-    <string name="note_edit">note edit</string>
+    <string name="note_edit">Welcome in _notepad!</string>
     <string name="save_note">note save</string>
     <string name="delete_note">delete note</string>
     <string name="create_note">create note</string>

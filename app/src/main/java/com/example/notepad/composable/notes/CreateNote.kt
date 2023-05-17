@@ -95,7 +95,7 @@ fun CreateNote(
                     Spacer(modifier = Modifier.padding(12.dp))
 
                     TextField(
-                        value = currentTitle.value,
+                        value = currentNote.value,
                         modifier = Modifier
                             .fillMaxHeight(0.5f)
                             .fillMaxWidth(),

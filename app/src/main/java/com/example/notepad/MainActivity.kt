@@ -16,7 +16,6 @@ import com.example.notepad.composable.login_register.RegisterPage
 import com.example.notepad.composable.notes.CreateNote
 import com.example.notepad.composable.notes.EditNote
 import com.example.notepad.composable.notes.NoteDetails
-import com.example.notepad.composable.notes.NotesPage
 import com.example.notepad.composable.notes.NotesViewModel
 import com.example.notepad.composable.notes.NotesViewModelFactory
 import com.example.notepad.composable.notes.notes_list.NoteList
@@ -56,9 +55,6 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("register_page") {
                     RegisterPage(navController = navController)
-                }
-                composable("notes_page") {
-                    NotesPage(navController = navController)
                 }
                 composable("notelist_page") {
                     NoteList(navController = navController, notesViewModel)

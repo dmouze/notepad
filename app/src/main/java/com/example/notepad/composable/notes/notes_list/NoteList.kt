@@ -63,7 +63,7 @@ fun NoteList(
 
 
     NotepadTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.primary) {
+        Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
             Scaffold(
                 topBar = {
                     AppBar(
@@ -129,10 +129,10 @@ fun NoteList(
 
 @Composable
 fun SearchBar(query: MutableState<String>) {
-    Column(Modifier.padding(top = 12.dp, start = 12.dp, end = 12.dp, bottom = 0.dp)) {
+    Column(Modifier.padding(top = 12.dp, start = 12.dp, end = 12.dp, bottom = 12.dp)) {
         TextField(
             value = query.value,
-            placeholder = { Text("Search..") },
+            placeholder = { Text("Search note...") },
             maxLines = 1,
             onValueChange = { query.value = it },
             modifier = Modifier
@@ -175,7 +175,7 @@ fun NotesList(
     var previousHeader = ""
     LazyColumn(
         contentPadding = PaddingValues(12.dp),
-        modifier = Modifier.background(MaterialTheme.colors.primary)
+        modifier = Modifier.background(Color.White)
     ) {
         val queriedNotes = if (query.value.isEmpty()){
             notes
