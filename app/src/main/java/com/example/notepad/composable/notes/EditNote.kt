@@ -55,6 +55,7 @@ fun EditNote(
     }
 
 
+
     LaunchedEffect(key1 = true) {
         scope.launch(Dispatchers.IO) {
             note.value = viewModel.getNote(noteId) ?: Constants.noteDetailPlaceHolder

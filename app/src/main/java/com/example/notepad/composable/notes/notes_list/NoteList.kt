@@ -15,7 +15,6 @@ import androidx.compose.material.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -57,7 +56,7 @@ fun NoteList(
 
     val openDialog = remember { mutableStateOf(false) }
 
-    val notes = viewModel.getNotes.observeAsState()
+    val notes = viewModel.getNotesByUserId
 
     val context = LocalContext.current
 
@@ -69,10 +68,10 @@ fun NoteList(
                     AppBar(
                         title = stringResource(R.string.note_edit),
                         onIconClick = {
-                            if (notes.value?.isNotEmpty() == true) {
+                            if (notes.isNotEmpty()) {
                                 openDialog.value = true
                                 deleteText.value = "Are you sure you want to delete all notes ?"
-                                notesDelete.value = notes.value ?: emptyList()
+                                notesDelete.value = notes
                             } else {
                                 Toast.makeText(context, "No Notes found.", Toast.LENGTH_SHORT)
                                     .show()
@@ -103,7 +102,7 @@ fun NoteList(
                 Column {
                     SearchBar(noteQuery)
                     NotesList(
-                        notes = notes.value.orPlaceHolderList(),
+                        notes = notes.orPlaceHolderList(),
                         query = noteQuery,
                         openDialog = openDialog,
                         deleteText = deleteText,

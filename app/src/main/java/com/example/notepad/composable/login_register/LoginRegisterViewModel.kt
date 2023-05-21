@@ -7,8 +7,6 @@ import com.example.notepad.data.user_data.User
 import com.example.notepad.data.user_data.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -17,7 +15,8 @@ class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
     private val repo = UserRepository(app.applicationContext)
     private var userExist = false
     private val currentUser = MutableStateFlow<User?>(null)
-    val userFlow = currentUser.asStateFlow()
+
+    private var userId : Int? = null
 
     suspend fun checkPassword(username: String, password: String): Boolean {
         return withContext(Dispatchers.IO) {
@@ -26,12 +25,14 @@ class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private fun setCurrentUser(user: User) {
-        currentUser.value = user
+    fun getUserId(): Int? {
+        println(userId)
+        return userId
     }
 
-    fun getCurrentUser(): StateFlow<User?> {
-        return currentUser
+    private fun setCurrentUser(user: User) {
+        currentUser.value = user
+        userId = user.id
     }
 
     suspend fun checkIfUserExists(loginValue: String): Boolean {
@@ -52,9 +53,7 @@ class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
             val user = getUserByLoginAndPassword(loginValue, passwordValue)
             if (user != null) {
                 setCurrentUser(user)
-                userFlow.apply {
-                    currentUser.asStateFlow()
-                }
+                userId = repo.getUserId(loginValue)
                 println(currentUser.value)
                 true
             } else {

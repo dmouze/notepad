@@ -1,29 +1,31 @@
 package com.example.notepad.data.notes_data
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import com.example.notepad.data.AppDb
+import com.example.notepad.data.AppDatabase
 
 class  NotesRepository(context: Context) : NoteDAO {
-    private val noteDao = AppDb.getInstance(context).noteDao()
+    private val noteDao = AppDatabase.getInstance(context).noteDao()
+    override suspend fun getNotesByUserId(userId: Int): List<Note> {
+        return noteDao.getNotesByUserId(userId)
+    }
 
     override suspend fun getNoteById(id: Int): Note? {
         return noteDao.getNoteById(id)
     }
 
-    override fun getNotes(): LiveData<List<Note>> {
+    override suspend fun getNotes(): List<Note> {
         return noteDao.getNotes()
     }
 
-    override fun deleteNote(note: Note): Int {
+    override suspend fun deleteNote(note: Note): Int {
         return noteDao.deleteNote(note)
     }
 
-    override fun updateNote(note: Note): Int {
+    override suspend fun updateNote(note: Note): Int {
         return noteDao.updateNote(note)
     }
 
-    override fun insertNote(note: Note) {
+    override suspend fun insertNote(note: Note) {
         return noteDao.insertNote(note)
     }
 

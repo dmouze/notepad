@@ -1,13 +1,13 @@
 package com.example.notepad.data.user_data
 
 import android.content.Context
-import com.example.notepad.data.AppDb
+import com.example.notepad.data.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class UserRepository(context: Context): UserDAO{
-    private val userDao = AppDb.getInstance(context).userDao()
+    private val userDao = AppDatabase.getInstance(context).userDao()
 
     override suspend fun insert(user: User) = withContext(Dispatchers.IO) {
         userDao.insert(user)
@@ -20,6 +20,11 @@ class UserRepository(context: Context): UserDAO{
     override suspend fun update(user: User) = withContext(Dispatchers.IO) {
         userDao.update(user)
     }
+
+    override suspend fun getUserId(loginValue: String): Int {
+        return userDao.getUserId(loginValue)
+    }
+
 
     override suspend fun getUserByLogin(loginValue: String): User? {
         return userDao.getUserByLogin(loginValue)

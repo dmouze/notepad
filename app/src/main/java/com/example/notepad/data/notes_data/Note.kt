@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter
 @Entity(tableName = Constants.NOTES_TABLE_NAME, indices = [Index(value = ["id"], unique = true)])
 data class Note(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "userId") val userId: Int? = 0,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "note") val note: String,
     @ColumnInfo(name = "dateUpdated") val dateUpdated: String = getDateCreated()

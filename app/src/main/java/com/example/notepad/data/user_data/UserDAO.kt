@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.notepad.data.user_data.User
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -19,6 +18,9 @@ interface UserDAO {
 
     @Update
     suspend fun update(user: User)
+
+    @Query("SELECT id FROM users WHERE loginValue = :loginValue")
+    suspend fun getUserId(loginValue: String): Int
 
     @Query("SELECT * FROM users WHERE users.loginValue=:loginValue")
     suspend fun getUserByLogin(loginValue: String): User?

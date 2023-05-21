@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.notepad.composable.login_register.LoginPage
+import com.example.notepad.composable.login_register.LoginRegisterViewModel
 import com.example.notepad.composable.login_register.RegisterPage
 import com.example.notepad.composable.notes.CreateNote
 import com.example.notepad.composable.notes.EditNote
@@ -19,20 +20,29 @@ import com.example.notepad.composable.notes.NoteDetails
 import com.example.notepad.composable.notes.NotesViewModel
 import com.example.notepad.composable.notes.NotesViewModelFactory
 import com.example.notepad.composable.notes.notes_list.NoteList
-import com.example.notepad.data.AppDb
+import com.example.notepad.data.AppDatabase
+import com.example.notepad.data.notes_data.NotesRepository
+import com.example.notepad.data.user_data.User
+import com.example.notepad.data.user_data.UserRepository
 import com.example.notepad.ui.theme.NotepadTheme
 
 
 @Suppress("DEPRECATION")
 class MainActivity : ComponentActivity() {
     private lateinit var notesViewModel: NotesViewModel
+    private lateinit var loginRegisterViewModel: LoginRegisterViewModel
+    private var user : User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         super.onCreate(savedInstanceState)
 
-        val noteDao = AppDb.getInstance(this).noteDao()
-        val notesViewModelFactory = NotesViewModelFactory(noteDao)
+        AppDatabase.getInstance(this)
+        val notesRepository = NotesRepository(context = applicationContext)
+        val userRepository = UserRepository(context = applicationContext)
+        loginRegisterViewModel = LoginRegisterViewModel(application)
+
+        val notesViewModelFactory = NotesViewModelFactory(notesRepository, userRepository, user )
         notesViewModel = ViewModelProvider(this, notesViewModelFactory)[NotesViewModel::class.java]
 
         setContent {
@@ -62,7 +72,7 @@ class MainActivity : ComponentActivity() {
                 composable(
                     "createnote_page",
                 ) {
-                    CreateNote(navController = navController, notesViewModel)
+                    CreateNote(navController, notesViewModel)
                 }
                 composable(
                     "notesdetail_page",
