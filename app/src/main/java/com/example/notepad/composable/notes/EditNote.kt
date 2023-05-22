@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.notepad.AppBar
 import com.example.notepad.Constants
@@ -36,9 +37,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun EditNote(
     noteId: Int,
-    navController: NavController,
-    viewModel: NotesViewModel
+    navController: NavController
 ) {
+    val viewModel: NotesViewModel = viewModel()
     val scope = rememberCoroutineScope()
     val note = remember { mutableStateOf(Constants.noteDetailPlaceHolder) }
 

@@ -17,15 +17,15 @@ interface NoteDAO {
     suspend fun getNoteById(id: Int): Note?
 
     @Query("SELECT * FROM Notes ORDER BY dateUpdated DESC")
-    suspend fun getNotes(): List<Note>
+    fun getNotes(): List<Note>
 
     @Delete
-    suspend fun deleteNote(note: Note) : Int
+    fun deleteNote(note: Note) : Int
 
     @Update
-    suspend fun updateNote(note: Note) : Int
+    fun updateNote(note: Note) : Int
 
     @Insert
-    suspend fun insertNote(note: Note)
+    fun insertNote(note: Note)
 
 }

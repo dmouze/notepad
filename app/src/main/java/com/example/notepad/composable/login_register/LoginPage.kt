@@ -134,7 +134,7 @@ fun LoginPage(
                                     )
                                 }
 
-                                navController.navigate("notelist_page") {
+                                navController.navigate("notelist_page/${loginRegisterViewModel.currentUser.value!!.id}") {
                                     launchSingleTop = true
 
                                 }

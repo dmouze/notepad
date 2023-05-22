@@ -1,13 +1,13 @@
 package com.example.notepad.data.user_data
 
 import android.content.Context
-import com.example.notepad.data.AppDatabase
+import com.example.notepad.data.AppDb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class UserRepository(context: Context): UserDAO{
-    private val userDao = AppDatabase.getInstance(context).userDao()
+    private val userDao = AppDb.getInstance(context).userDao()
 
     override suspend fun insert(user: User) = withContext(Dispatchers.IO) {
         userDao.insert(user)

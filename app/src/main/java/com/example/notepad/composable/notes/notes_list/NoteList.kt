@@ -40,8 +40,11 @@ import com.example.notepad.ui.theme.NotepadTheme
 @Composable
 fun NoteList(
     navController: NavController,
-    viewModel: NotesViewModel
+    viewModel: NotesViewModel,
+    userId : Int
 ) {
+
+
     val deleteText = remember {
         mutableStateOf("")
     }
@@ -54,12 +57,15 @@ fun NoteList(
         mutableStateOf(listOf<Note>())
     }
 
+    viewModel.userId.value = userId
+
     val openDialog = remember { mutableStateOf(false) }
 
     val notes = viewModel.getNotesByUserId
 
     val context = LocalContext.current
 
+    println(userId)
 
     NotepadTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
@@ -176,7 +182,7 @@ fun NotesList(
         contentPadding = PaddingValues(12.dp),
         modifier = Modifier.background(Color.White)
     ) {
-        val queriedNotes = if (query.value.isEmpty()){
+        val queriedNotes = if (query.value.isEmpty()) {
             notes
         } else {
             notes.filter { it.note.contains(query.value) || it.title.contains(query.value) }
@@ -195,14 +201,14 @@ fun NotesList(
                         .fillMaxWidth()
                         .height(6.dp)
                 )
-                previousHeader =  note.getDay()
+                previousHeader = note.getDay()
             }
 
 
             NoteListItem(
                 note,
                 openDialog,
-                deleteText = deleteText ,
+                deleteText = deleteText,
                 navController,
                 notesToDelete = notesToDelete,
                 noteBackGround = Color.Cyan
@@ -227,16 +233,18 @@ fun NoteListItem(
     notesToDelete: MutableState<List<Note>>
 ) {
 
-    return Box(modifier = Modifier
-        .height(120.dp)
-        .clip(RoundedCornerShape(12.dp))) {
+    return Box(
+        modifier = Modifier
+            .height(120.dp)
+            .clip(RoundedCornerShape(12.dp))
+    ) {
         Column(
             modifier = Modifier
                 .background(noteBackGround)
                 .fillMaxWidth()
                 .height(120.dp)
                 .combinedClickable(interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = false), // You can also change the color and radius of the ripple
+                    indication = rememberRipple(bounded = false),
                     onClick = {
                         if (note.id != 0) {
                             navController.navigate(Constants.noteDetailNavigation(note.id))
