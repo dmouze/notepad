@@ -47,7 +47,7 @@ fun CreateNote(
     }
 
     val currentUser = remember {
-        mutableStateOf(viewModel.userId.value)
+        mutableStateOf(viewModel.userId.intValue)
     }
 
 
@@ -62,7 +62,7 @@ fun CreateNote(
                             viewModel.createNote(
                                 currentTitle.value,
                                 currentNote.value,
-                                currentUser.value
+                                currentUser.intValue
                             )
                             println(currentUser)
                             navController.popBackStack()

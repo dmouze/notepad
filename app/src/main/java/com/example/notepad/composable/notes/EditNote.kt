@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.notepad.AppBar
 import com.example.notepad.Constants
@@ -37,9 +36,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun EditNote(
     noteId: Int,
-    navController: NavController
+    navController: NavController,
+    viewModel: NotesViewModel
 ) {
-    val viewModel: NotesViewModel = viewModel()
     val scope = rememberCoroutineScope()
     val note = remember { mutableStateOf(Constants.noteDetailPlaceHolder) }
 
@@ -72,12 +71,11 @@ fun EditNote(
                     AppBar(
                         title = "Edit Note",
                         onIconClick = {
-
                             viewModel.updateNote(
                                 Note(
                                     id = note.value.id,
-                                    note = note.value.note,
-                                    title = note.value.title
+                                    note = currentNote.value,
+                                    title = currentTitle.value
                                 )
                             )
                             navController.popBackStack()
@@ -101,37 +99,42 @@ fun EditNote(
 
                     TextField(
                         value = currentTitle.value,
+                        colors = TextFieldDefaults.textFieldColors(
+                            cursorColor = Color.Black,
+                            focusedLabelColor = Color.Black,
+                        ),
                         onValueChange = { value ->
                             currentTitle.value = value
                             if (currentTitle.value != note.value.title) {
                                 saveButtonState.value = true
-                            } else if (currentNote.value == note.value.note && currentTitle.value == note.value.title) {
+                            } else if (currentNote.value == note.value.note &&
+                                currentTitle.value == note.value.title
+                            ) {
                                 saveButtonState.value = false
                             }
                         },
-                        colors = TextFieldDefaults.textFieldColors(
-                            cursorColor = Color.Black,
-                            focusedLabelColor = Color.Black
-                        ),
-                        label = { Text(text = "Title")}
+                        label = { Text(text = "Title") }
                     )
+
                     Spacer(modifier = Modifier.padding(12.dp))
 
                     TextField(
-                        value = currentTitle.value,
+                        value = currentNote.value,
+                        colors = TextFieldDefaults.textFieldColors(
+                            cursorColor = Color.Black,
+                            focusedLabelColor = Color.Black,
+                        ),
                         onValueChange = { value ->
                             currentNote.value = value
                             if (currentNote.value != note.value.note) {
                                 saveButtonState.value = true
-                            } else if (currentNote.value == note.value.note && currentTitle.value == note.value.title) {
+                            } else if (currentNote.value == note.value.note &&
+                                currentTitle.value == note.value.title
+                            ) {
                                 saveButtonState.value = false
                             }
                         },
-                        colors = TextFieldDefaults.textFieldColors(
-                            cursorColor = Color.Black,
-                            focusedLabelColor = Color.Black
-                        ),
-                        label = { Text(text = "Note")}
+                        label = { Text(text = "Body") }
                     )
                 }
 

@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.notepad.AppBar
@@ -57,11 +58,11 @@ fun NoteList(
         mutableStateOf(listOf<Note>())
     }
 
-    viewModel.userId.value = userId
+    viewModel.userId.intValue = userId
 
     val openDialog = remember { mutableStateOf(false) }
 
-    val notes = viewModel.getNotesByUserId
+    val notes = viewModel.notes
 
     val context = LocalContext.current
 
@@ -72,12 +73,12 @@ fun NoteList(
             Scaffold(
                 topBar = {
                     AppBar(
-                        title = stringResource(R.string.note_edit),
+                        title = stringResource(R.string.notepad_),
                         onIconClick = {
-                            if (notes.isNotEmpty()) {
+                            if (notes.value.isNotEmpty()) {
                                 openDialog.value = true
                                 deleteText.value = "Are you sure you want to delete all notes ?"
-                                notesDelete.value = notes
+                                notesDelete.value = notes.value
                             } else {
                                 Toast.makeText(context, "No Notes found.", Toast.LENGTH_SHORT)
                                     .show()
@@ -108,7 +109,7 @@ fun NoteList(
                 Column {
                     SearchBar(noteQuery)
                     NotesList(
-                        notes = notes.orPlaceHolderList(),
+                        notes = notes.value.orPlaceHolderList(),
                         query = noteQuery,
                         openDialog = openDialog,
                         deleteText = deleteText,
@@ -247,12 +248,13 @@ fun NoteListItem(
                     indication = rememberRipple(bounded = false),
                     onClick = {
                         if (note.id != 0) {
-                            navController.navigate(Constants.noteDetailNavigation(note.id))
+                            navController.navigate(Constants.noteDetailNavigation(note.id ?: 0))
                         }
                     },
                     onLongClick = {
                         if (note.id != 0) {
                             openDialog.value = true
+                            println(note.id)
                             deleteText.value = "Are you sure you want to delete this note ?"
                             notesToDelete.value = mutableListOf(note)
                         }

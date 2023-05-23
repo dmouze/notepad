@@ -10,7 +10,7 @@ object Constants {
 
 
     fun noteDetailNavigation(noteId: Int) = "noteDetail/$noteId"
-    fun noteEditNavigation(noteId: Int) = "noteEdit/$noteId"
+    fun noteEditNavigation(noteId: Int) = "editNote/$noteId"
 
 
     fun List<Note>?.orPlaceHolderList(): List<Note> {

@@ -59,9 +59,11 @@ class MainActivity : ComponentActivity() {
                 composable("login_page") {
                     LoginPage(navController = navController)
                 }
+
                 composable("register_page") {
                     RegisterPage(navController = navController)
                 }
+
                 composable("notelist_page/{userId}",
                     arguments = listOf(navArgument("userId"){
                         type = NavType.IntType
@@ -73,40 +75,32 @@ class MainActivity : ComponentActivity() {
                     if(userId != null){
                         NoteList(navController = navController,notesViewModel,userId)
                     }
-
                 }
+
                 composable(
                     "createnote_page",
                 ) {
                     CreateNote(navController = navController, notesViewModel)
                 }
+
                 composable(
-                    "notesdetail_page",
+                    "noteDetail/{noteId}",
                     arguments = listOf(navArgument("noteId") {
                         type = NavType.IntType
                     })
                 ) { backStackEntry ->
                     backStackEntry.arguments?.getInt("noteId")
-                        ?.let { noteId ->
-                            NoteDetails(
-                                noteId = noteId,
-                                navController = navController
-                            )
-                        }
+                        ?.let { NoteDetails(noteId = it, navController, notesViewModel) }
                 }
+
                 composable(
-                    "editnote_page",
+                    "editNote/{noteId}",
                     arguments = listOf(navArgument("noteId") {
                         type = NavType.IntType
                     })
                 ) { backStackEntry ->
                     backStackEntry.arguments?.getInt("noteId")
-                        ?.let { noteId ->
-                            EditNote(
-                                noteId = noteId,
-                                navController = navController,
-                            )
-                        }
+                        ?.let { EditNote(noteId = it, navController, notesViewModel) }
                 }
             }
         )

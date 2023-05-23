@@ -57,16 +57,12 @@ fun NoteDetails(
                     AppBar(
                         title = note.value.title,
                         onIconClick = {
-                            navController.navigate(
-                                Constants.noteDetailNavigation(
-                                    note.value.id
-                                )
-                            )
+                            navController.navigate(Constants.noteEditNavigation(note.value.id ?: 0))
                         },
                         icon = {
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.edit_note),
-                                contentDescription = stringResource(R.string.note_edit),
+                                contentDescription = stringResource(R.string.notepad_),
                                 tint = Color.Black,
                             )
                         },

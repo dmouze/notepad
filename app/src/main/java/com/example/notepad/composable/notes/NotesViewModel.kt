@@ -9,22 +9,28 @@ import com.example.notepad.data.notes_data.NotesRepository
 import com.example.notepad.data.user_data.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class NotesViewModel(
     private val repo: NotesRepository, private val userRepo: UserRepository
 ) : ViewModel() {
 
     var userId = mutableStateOf(0)
+    val notes = mutableStateOf<List<Note>>(emptyList())
 
-    val getNotesByUserId: List<Note> = runBlocking {
-        repo.getNotesByUserId(userId.value)
+    init {
+        viewModelScope.launch {
+            notes.value = repo.getNotesByUserId(userId.intValue)
+        }
     }
 
+    private suspend fun getNotesByUserId(userId: Int): List<Note> {
+        return repo.getNotesByUserId(userId)
+    }
 
     fun deleteNotes(note: Note) {
         viewModelScope.launch(Dispatchers.IO){
             repo.deleteNote(note)
+            notes.value = getNotesByUserId(userId.intValue)
         }
     }
 
@@ -34,8 +40,9 @@ class NotesViewModel(
         }
     }
 
-    fun createNote(title: String, note: String, userId: Int?) {
+    fun createNote(title: String, note: String, userId: Int) {
         viewModelScope.launch(Dispatchers.IO){
+            notes.value = getNotesByUserId(userId = userId)
             repo.insertNote(Note(title = title, note = note, userId = userId))
         }
     }
