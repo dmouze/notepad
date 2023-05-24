@@ -20,11 +20,18 @@ class NotesViewModel(
     init {
         viewModelScope.launch {
             notes.value = repo.getNotesByUserId(userId.intValue)
+            println("init $userId")
         }
     }
 
     private suspend fun getNotesByUserId(userId: Int): List<Note> {
         return repo.getNotesByUserId(userId)
+    }
+    fun reloadNotes() {
+        viewModelScope.launch {
+            notes.value = repo.getNotesByUserId(userId.intValue)
+            println("reload $userId")
+        }
     }
 
     fun deleteNotes(note: Note) {
@@ -41,9 +48,10 @@ class NotesViewModel(
     }
 
     fun createNote(title: String, note: String, userId: Int) {
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
+            val newNote = Note(title = title, note = note, userId = userId)
+            repo.insertNote(newNote)
             notes.value = getNotesByUserId(userId = userId)
-            repo.insertNote(Note(title = title, note = note, userId = userId))
         }
     }
 

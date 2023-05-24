@@ -35,13 +35,15 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.notepad.R
+import com.example.notepad.composable.notes.NotesViewModel
 import com.example.notepad.ui.theme.primaryColor
 import kotlinx.coroutines.runBlocking
 
 @Composable
 fun LoginPage(
     navController: NavController,
-    loginRegisterViewModel: LoginRegisterViewModel = viewModel()
+    userViewModel: UserViewModel = viewModel(),
+    notesViewModel: NotesViewModel = viewModel()
 ) {
     // Utwórz stan dla pola login i hasła
     val loginState = remember { mutableStateOf("") }
@@ -76,7 +78,7 @@ fun LoginPage(
                     value = loginState.value,
                     onValueChange = {
                         loginState.value = it
-                        loginRegisterViewModel.logout()
+                        userViewModel.logout()
                     },
                     label = { Text(text = "Login name") },
                     placeholder = { Text(text = "Login name") },
@@ -88,7 +90,7 @@ fun LoginPage(
                     value = passwordState.value,
                     onValueChange = {
                         passwordState.value = it
-                        loginRegisterViewModel.logout()
+                        userViewModel.logout()
                     },
                     trailingIcon = {
                         IconButton(onClick = {
@@ -113,13 +115,14 @@ fun LoginPage(
 
                 Button(
                     onClick = {
+                        userViewModel.logout()
                         // Sprawdź, czy użytkownik istnieje
                         val userExists = runBlocking {
-                            loginRegisterViewModel.checkIfUserExists(loginState.value)
+                            userViewModel.checkIfUserExists(loginState.value)
                         }
                         if (userExists) {
                             val validPassword = runBlocking {
-                                loginRegisterViewModel.checkPassword(
+                                userViewModel.checkPassword(
                                     loginState.value,
                                     passwordState.value
                                 )
@@ -128,15 +131,13 @@ fun LoginPage(
                             if (passwordState.value.isNotEmpty() && validPassword) {
                                 // Wywołaj funkcję logowania z ViewModel
                                 runBlocking {
-                                    loginRegisterViewModel.login(
+                                    userViewModel.login(
                                         loginState.value,
                                         passwordState.value
                                     )
                                 }
-
-                                navController.navigate("notelist_page/${loginRegisterViewModel.currentUser.value!!.id}") {
+                                navController.navigate("notelist_page/${userViewModel.currentUser.value!!.id}") {
                                     launchSingleTop = true
-
                                 }
                             } else {
                                 // Wyświetl informację o błędzie

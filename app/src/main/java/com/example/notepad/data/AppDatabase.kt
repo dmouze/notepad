@@ -10,7 +10,7 @@ import com.example.notepad.data.notes_data.NoteDAO
 import com.example.notepad.data.user_data.User
 import com.example.notepad.data.user_data.UserDAO
 
-@Database(entities = [Note::class, User::class], version = 1)
+@Database(entities = [Note::class, User::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDAO
     abstract fun userDao(): UserDAO
@@ -22,7 +22,6 @@ object AppDb {
     fun getInstance(context: Context): AppDatabase {
         if (db == null) {
             db = Room.databaseBuilder(context, AppDatabase::class.java, Constants.DATABASE_NAME)
-                //    .addMigrations(MIGRATION_2_3)
                 .fallbackToDestructiveMigration()
                 .build()
         }

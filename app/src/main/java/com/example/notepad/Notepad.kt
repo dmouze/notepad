@@ -1,7 +1,6 @@
 package com.example.notepad
 
 import android.app.Application
-import androidx.room.Room
 import com.example.notepad.data.AppDatabase
 import com.example.notepad.data.notes_data.NoteDAO
 

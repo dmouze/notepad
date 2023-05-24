@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class UserRepository(context: Context): UserDAO{
+class UserRepository(context: Context): UserDAO {
     private val userDao = AppDb.getInstance(context).userDao()
 
     override suspend fun insert(user: User) = withContext(Dispatchers.IO) {

@@ -45,7 +45,7 @@ import kotlinx.coroutines.runBlocking
 @Composable
 fun RegisterPage(
     navController: NavController,
-    loginRegisterViewModel: LoginRegisterViewModel = viewModel()
+    userViewModel: UserViewModel = viewModel()
 ) {
 
     val nameValue = remember { mutableStateOf("") }
@@ -118,7 +118,7 @@ fun RegisterPage(
                                 loginValue.value = it
                                 runBlocking {
                                     userExist =
-                                        loginRegisterViewModel.checkIfUserExists(loginValue.value)
+                                        userViewModel.checkIfUserExists(loginValue.value)
                                 }
                             },
 
@@ -236,7 +236,7 @@ fun RegisterPage(
                             onClick = {
                                 runBlocking {
                                     userExist =
-                                        loginRegisterViewModel.checkIfUserExists(loginValue.value)
+                                        userViewModel.checkIfUserExists(loginValue.value)
                                 }
 
                                 if (!loginErrorState.value && !nameErrorState.value && !passwordErrorState.value && !confirmPasswordErrorState.value){
@@ -286,7 +286,7 @@ fun RegisterPage(
                                     ).show()
                                 } else {
                                     if (allFields) {
-                                        loginRegisterViewModel.registerUser(
+                                        userViewModel.registerUser(
                                             nameValue.value,
                                             loginValue.value,
                                             passwordValue.value,

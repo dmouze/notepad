@@ -19,7 +19,7 @@ import com.example.notepad.composable.notes.EditNote
 import com.example.notepad.composable.notes.NoteDetails
 import com.example.notepad.composable.notes.NotesViewModel
 import com.example.notepad.composable.notes.NotesViewModelFactory
-import com.example.notepad.composable.notes.notes_list.NoteList
+import com.example.notepad.composable.notes.NoteList
 import com.example.notepad.data.AppDb
 import com.example.notepad.data.notes_data.NotesRepository
 import com.example.notepad.data.user_data.UserRepository
@@ -43,66 +43,65 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NotepadTheme {
-                Login()
+                LoginScreen(notesViewModel)
             }
         }
     }
+}
 
-    @Composable
-    fun Login() {
-        val navController = rememberNavController()
+@Composable
+fun LoginScreen(notesViewModel: NotesViewModel) {
+    val navController = rememberNavController()
 
-        NavHost(
-            navController = navController,
-            startDestination = "login_page",
-            builder = {
-                composable("login_page") {
-                    LoginPage(navController = navController)
+    NavHost(
+        navController = navController,
+        startDestination = "login_page",
+        builder = {
+            composable("login_page") {
+                LoginPage(navController = navController, notesViewModel = notesViewModel)
+            }
+
+            composable("register_page") {
+                RegisterPage(navController = navController)
+            }
+
+            composable(
+                "notelist_page/{userId}",
+                arguments = listOf(navArgument("userId") {
+                    type = NavType.IntType
+                })
+            ) {
+                val userId = remember {
+                    it.arguments?.getInt("userId")
                 }
-
-                composable("register_page") {
-                    RegisterPage(navController = navController)
-                }
-
-                composable("notelist_page/{userId}",
-                    arguments = listOf(navArgument("userId"){
-                        type = NavType.IntType
-                    })
-                ) {
-                    val userId = remember {
-                        it.arguments?.getInt("userId")
-                    }
-                    if(userId != null){
-                        NoteList(navController = navController,notesViewModel,userId)
-                    }
-                }
-
-                composable(
-                    "createnote_page",
-                ) {
-                    CreateNote(navController = navController, notesViewModel)
-                }
-
-                composable(
-                    "noteDetail/{noteId}",
-                    arguments = listOf(navArgument("noteId") {
-                        type = NavType.IntType
-                    })
-                ) { backStackEntry ->
-                    backStackEntry.arguments?.getInt("noteId")
-                        ?.let { NoteDetails(noteId = it, navController, notesViewModel) }
-                }
-
-                composable(
-                    "editNote/{noteId}",
-                    arguments = listOf(navArgument("noteId") {
-                        type = NavType.IntType
-                    })
-                ) { backStackEntry ->
-                    backStackEntry.arguments?.getInt("noteId")
-                        ?.let { EditNote(noteId = it, navController, notesViewModel) }
+                if (userId != null) {
+                    NoteList(navController = navController, notesViewModel, userId)
                 }
             }
-        )
-    }
+
+            composable("createnote_page") {
+                CreateNote(navController = navController, notesViewModel)
+            }
+
+            composable(
+                "noteDetail/{noteId}",
+                arguments = listOf(navArgument("noteId") {
+                    type = NavType.IntType
+                })
+            ) { backStackEntry ->
+                backStackEntry.arguments?.getInt("noteId")
+                    ?.let { NoteDetails(noteId = it, navController, notesViewModel) }
+            }
+
+            composable(
+                "editNote/{noteId}",
+                arguments = listOf(navArgument("noteId") {
+                    type = NavType.IntType
+                })
+            ) { backStackEntry ->
+                backStackEntry.arguments?.getInt("noteId")
+                    ?.let { EditNote(noteId = it, navController, notesViewModel) }
+            }
+        }
+    )
 }

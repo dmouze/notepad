@@ -1,4 +1,4 @@
-package com.example.notepad.composable.notes.notes_list
+package com.example.notepad.composable.notes
 
 import android.annotation.SuppressLint
 import android.widget.Toast
@@ -25,14 +25,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.notepad.AppBar
 import com.example.notepad.Constants
 import com.example.notepad.Constants.orPlaceHolderList
 import com.example.notepad.R
-import com.example.notepad.composable.notes.NotesViewModel
 import com.example.notepad.data.notes_data.Note
 import com.example.notepad.data.notes_data.getDay
 import com.example.notepad.ui.theme.NotepadTheme
@@ -58,7 +56,9 @@ fun NoteList(
         mutableStateOf(listOf<Note>())
     }
 
-    viewModel.userId.intValue = userId
+    viewModel.userId = remember {
+        mutableStateOf(userId)
+    }
 
     val openDialog = remember { mutableStateOf(false) }
 
@@ -248,7 +248,7 @@ fun NoteListItem(
                     indication = rememberRipple(bounded = false),
                     onClick = {
                         if (note.id != 0) {
-                            navController.navigate(Constants.noteDetailNavigation(note.id ?: 0))
+                            navController.navigate(Constants.noteDetailNavigation(note.id))
                         }
                     },
                     onLongClick = {

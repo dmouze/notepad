@@ -3,6 +3,7 @@ package com.example.notepad.composable.login_register
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.notepad.data.notes_data.NotesRepository
 import com.example.notepad.data.user_data.User
 import com.example.notepad.data.user_data.UserRepository
 import kotlinx.coroutines.Dispatchers
@@ -11,8 +12,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LoginRegisterViewModel(app: Application) : AndroidViewModel(app) {
+class UserViewModel(app: Application) : AndroidViewModel(app) {
 
+    private val noteRepo = NotesRepository(app.applicationContext)
     private val repo = UserRepository(app.applicationContext)
     private var userExist = false
     val currentUser = MutableStateFlow<User?>(null)
