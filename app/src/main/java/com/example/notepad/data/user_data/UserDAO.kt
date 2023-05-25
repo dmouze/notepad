@@ -1,5 +1,6 @@
 package com.example.notepad.data.user_data
 
+import androidx.compose.runtime.MutableIntState
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -21,6 +22,9 @@ interface UserDAO {
 
     @Query("SELECT id FROM users WHERE loginValue = :loginValue")
     suspend fun getUserId(loginValue: String): Int
+
+    @Query("SELECT nameValue FROM users WHERE id = :id")
+    suspend fun getUserName(id: Int): String
 
     @Query("SELECT * FROM users WHERE users.loginValue=:loginValue")
     suspend fun getUserByLogin(loginValue: String): User?

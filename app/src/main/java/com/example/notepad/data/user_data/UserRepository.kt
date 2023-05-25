@@ -25,6 +25,10 @@ class UserRepository(context: Context): UserDAO {
         return userDao.getUserId(loginValue)
     }
 
+    override suspend fun getUserName(id: Int): String {
+        return userDao.getUserName(id)
+    }
+
 
     override suspend fun getUserByLogin(loginValue: String): User? {
         return userDao.getUserByLogin(loginValue)

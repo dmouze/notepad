@@ -16,6 +16,7 @@ class NotesViewModel(
 
     var userId = mutableStateOf(0)
     val notes = mutableStateOf<List<Note>>(emptyList())
+    var username = ""
 
     init {
         viewModelScope.launch {
@@ -24,9 +25,17 @@ class NotesViewModel(
         }
     }
 
+    fun getUserName(userId: Int): String {
+        viewModelScope.launch {
+            username = userRepo.getUserName(userId)
+        }
+        return username
+    }
+
     private suspend fun getNotesByUserId(userId: Int): List<Note> {
         return repo.getNotesByUserId(userId)
     }
+
     fun reloadNotes(userId: Int) {
         viewModelScope.launch {
             notes.value = repo.getNotesByUserId(userId)
@@ -35,14 +44,14 @@ class NotesViewModel(
     }
 
     fun deleteNotes(note: Note) {
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             repo.deleteNote(note)
             notes.value = getNotesByUserId(userId.intValue)
         }
     }
 
     fun updateNote(note: Note) {
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             repo.updateNote(note)
         }
     }
@@ -55,7 +64,7 @@ class NotesViewModel(
         }
     }
 
-    suspend fun getNote(noteId : Int) : Note? {
+    suspend fun getNote(noteId: Int): Note? {
         return repo.getNoteById(noteId)
     }
 
@@ -66,7 +75,7 @@ class NotesViewModelFactory(
     private val repo: NotesRepository, private val userRepo: UserRepository,
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return  NotesViewModel(
+        return NotesViewModel(
             repo = repo, userRepo = userRepo,
         ) as T
     }

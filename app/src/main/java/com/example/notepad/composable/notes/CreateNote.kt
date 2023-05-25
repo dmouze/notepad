@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.notepad.AppBar
 import com.example.notepad.R
 import com.example.notepad.ui.theme.NotepadTheme
 

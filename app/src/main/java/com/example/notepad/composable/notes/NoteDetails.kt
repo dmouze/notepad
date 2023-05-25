@@ -16,13 +16,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.notepad.AppBar
 import com.example.notepad.Constants
 import com.example.notepad.Constants.noteDetailPlaceHolder
 import com.example.notepad.R
@@ -57,12 +55,12 @@ fun NoteDetails(
                     AppBar(
                         title = note.value.title,
                         onIconClick = {
-                            navController.navigate(Constants.noteEditNavigation(note.value.id ?: 0))
+                            navController.navigate(Constants.noteEditNavigation(note.value.id))
                         },
                         icon = {
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.edit_note),
-                                contentDescription = stringResource(R.string.notepad_),
+                                contentDescription = "Edit note",
                                 tint = Color.Black,
                             )
                         },

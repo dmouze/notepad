@@ -27,7 +27,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.notepad.AppBar
 import com.example.notepad.Constants
 import com.example.notepad.Constants.orPlaceHolderList
 import com.example.notepad.R
@@ -35,14 +34,15 @@ import com.example.notepad.data.notes_data.Note
 import com.example.notepad.data.notes_data.getDay
 import com.example.notepad.ui.theme.NotepadTheme
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter",
+@SuppressLint(
+    "UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter",
     "StateFlowValueCalledInComposition"
 )
 @Composable
 fun NoteList(
     navController: NavController,
     notesViewModel: NotesViewModel,
-    userId : Int
+    userId: Int
 ) {
 
     val deleteText = remember {
@@ -65,16 +65,16 @@ fun NoteList(
 
     val notes = notesViewModel.notes
 
-    val context = LocalContext.current
+    val username = notesViewModel.getUserName(userId)
 
-    println(userId)
+    val context = LocalContext.current
 
     NotepadTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
             Scaffold(
                 topBar = {
                     AppBar(
-                        title = stringResource(R.string.notepad_),
+                        title = "Welcome in _notepad $username!",
                         onIconClick = {
                             if (notes.value.isNotEmpty()) {
                                 openDialog.value = true

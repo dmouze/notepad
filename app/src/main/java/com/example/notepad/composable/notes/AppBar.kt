@@ -1,12 +1,13 @@
-package com.example.notepad
+package com.example.notepad.composable.notes
 
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 
 
 @Composable
@@ -17,7 +18,7 @@ fun AppBar(
     iconState: MutableState<Boolean>
 ) {
     TopAppBar(
-        title = { Text(title) },
+        title = { Text(title, fontWeight = FontWeight.Bold, fontStyle = FontStyle.Italic) },
         backgroundColor = Color.White,
         actions = {
             IconButton(
