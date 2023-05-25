@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.notepad.Constants
 import com.example.notepad.Constants.orPlaceHolderList
@@ -33,6 +35,9 @@ import com.example.notepad.R
 import com.example.notepad.data.notes_data.Note
 import com.example.notepad.data.notes_data.getDay
 import com.example.notepad.ui.theme.NotepadTheme
+import com.example.notepad.ui.theme.PurpleGrey40
+import com.example.notepad.ui.theme.PurpleGrey80
+import com.example.notepad.ui.theme.primaryColor
 
 @SuppressLint(
     "UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter",
@@ -68,6 +73,9 @@ fun NoteList(
     val username = notesViewModel.getUserName(userId)
 
     val context = LocalContext.current
+
+
+
 
     NotepadTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
@@ -179,6 +187,7 @@ fun NotesList(
     navController: NavController,
     notesToDelete: MutableState<List<Note>>,
 ) {
+
     var previousHeader = ""
     LazyColumn(
         contentPadding = PaddingValues(12.dp),
@@ -189,19 +198,20 @@ fun NotesList(
         } else {
             notes.filter { it.note.contains(query.value) || it.title.contains(query.value) }
         }
+
         itemsIndexed(queriedNotes) { _, note ->
             if (note.getDay() != previousHeader) {
                 Column(
                     modifier = Modifier
-                        .padding(6.dp)
+                        .padding(10.dp)
                         .fillMaxWidth()
                 ) {
-                    Text(text = note.getDay(), color = Color.Black)
+                    Text(text = note.getDay(), color = Color.Black, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
                 }
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(6.dp)
+                        .height(10.dp)
                 )
                 previousHeader = note.getDay()
             }
@@ -213,8 +223,9 @@ fun NotesList(
                 deleteText = deleteText,
                 navController,
                 notesToDelete = notesToDelete,
-                noteBackGround = Color.Cyan
+                noteBackGround = PurpleGrey80
             )
+
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -263,28 +274,30 @@ fun NoteListItem(
                 )
 
         ) {
-            Row {
-                Column {
+            Row (modifier = Modifier.fillMaxHeight()){
+                Column (modifier = Modifier.fillMaxHeight()) {
                     Text(
                         text = note.title,
                         color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 12.dp)
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp)
                     )
                     Text(
                         text = note.note,
                         color = Color.Black,
+                        fontSize = 16.sp,
                         maxLines = 3,
-                        modifier = Modifier.padding(12.dp)
+                        modifier = Modifier.padding( horizontal = 12.dp)
                     )
                     Text(
                         text = note.dateUpdated,
-                        color = Color.Black,
-                        modifier = Modifier.padding(horizontal = 12.dp)
+                        fontSize = 14.sp,
+                        color = Color.DarkGray,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
                     )
                 }
             }
-
         }
     }
 }
