@@ -27,9 +27,9 @@ class NotesViewModel(
     private suspend fun getNotesByUserId(userId: Int): List<Note> {
         return repo.getNotesByUserId(userId)
     }
-    fun reloadNotes() {
+    fun reloadNotes(userId: Int) {
         viewModelScope.launch {
-            notes.value = repo.getNotesByUserId(userId.intValue)
+            notes.value = repo.getNotesByUserId(userId)
             println("reload $userId")
         }
     }

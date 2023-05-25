@@ -32,7 +32,7 @@ import com.example.notepad.ui.theme.NotepadTheme
 @Composable
 fun CreateNote(
     navController: NavController,
-    viewModel: NotesViewModel
+    notesViewModel: NotesViewModel
 ) {
     val currentNote = remember {
         mutableStateOf("")
@@ -47,7 +47,7 @@ fun CreateNote(
     }
 
     val currentUser = remember {
-        mutableStateOf(viewModel.userId.intValue)
+        mutableStateOf(notesViewModel.userId.intValue)
     }
 
 
@@ -59,7 +59,7 @@ fun CreateNote(
                         title = "Create Note",
                         onIconClick = {
 
-                            viewModel.createNote(
+                            notesViewModel.createNote(
                                 currentTitle.value,
                                 currentNote.value,
                                 currentUser.intValue

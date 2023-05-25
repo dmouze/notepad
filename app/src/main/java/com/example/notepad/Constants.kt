@@ -6,7 +6,6 @@ object Constants {
     const val NOTES_TABLE_NAME = "notes"
     const val USERS_TABLE_NAME = "users"
     const val DATABASE_NAME = "appDatabase"
-    const val NAVIGATION_NOTES_CREATE = "notesCreated"
 
 
     fun noteDetailNavigation(noteId: Int) = "noteDetail/$noteId"

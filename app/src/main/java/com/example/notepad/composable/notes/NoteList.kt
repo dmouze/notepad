@@ -35,14 +35,15 @@ import com.example.notepad.data.notes_data.Note
 import com.example.notepad.data.notes_data.getDay
 import com.example.notepad.ui.theme.NotepadTheme
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter",
+    "StateFlowValueCalledInComposition"
+)
 @Composable
 fun NoteList(
     navController: NavController,
-    viewModel: NotesViewModel,
+    notesViewModel: NotesViewModel,
     userId : Int
 ) {
-
 
     val deleteText = remember {
         mutableStateOf("")
@@ -56,13 +57,13 @@ fun NoteList(
         mutableStateOf(listOf<Note>())
     }
 
-    viewModel.userId = remember {
+    notesViewModel.userId = remember {
         mutableStateOf(userId)
     }
 
     val openDialog = remember { mutableStateOf(false) }
 
-    val notes = viewModel.notes
+    val notes = notesViewModel.notes
 
     val context = LocalContext.current
 
@@ -124,7 +125,7 @@ fun NoteList(
                     notesToDelete = notesDelete,
                     action = {
                         notesDelete.value.forEach {
-                            viewModel.deleteNotes(it)
+                            notesViewModel.deleteNotes(it)
                         }
                     })
             }

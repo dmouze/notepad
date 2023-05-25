@@ -45,7 +45,6 @@ fun LoginPage(
     userViewModel: UserViewModel = viewModel(),
     notesViewModel: NotesViewModel = viewModel()
 ) {
-    // Utwórz stan dla pola login i hasła
     val loginState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
     val passwordVisibility = remember { mutableStateOf(false) }
@@ -73,7 +72,6 @@ fun LoginPage(
                 .background(Color.White)
         ) {
             item {
-                // Dodaj pola tekstowe dla loginu i hasła
                 OutlinedTextField(
                     value = loginState.value,
                     onValueChange = {
@@ -116,7 +114,6 @@ fun LoginPage(
                 Button(
                     onClick = {
                         userViewModel.logout()
-                        // Sprawdź, czy użytkownik istnieje
                         val userExists = runBlocking {
                             userViewModel.checkIfUserExists(loginState.value)
                         }
@@ -127,20 +124,24 @@ fun LoginPage(
                                     passwordState.value
                                 )
                             }
-                            // Sprawdź, czy hasło zostało uzupełnione i czy zgadza się z użytkownikiem
                             if (passwordState.value.isNotEmpty() && validPassword) {
-                                // Wywołaj funkcję logowania z ViewModel
                                 runBlocking {
                                     userViewModel.login(
                                         loginState.value,
                                         passwordState.value
                                     )
                                 }
+
+                                userViewModel.currentUser.value!!.id?.let {
+                                    notesViewModel.reloadNotes(
+                                        it
+                                    )
+                                }
+
                                 navController.navigate("notelist_page/${userViewModel.currentUser.value!!.id}") {
                                     launchSingleTop = true
                                 }
                             } else {
-                                // Wyświetl informację o błędzie
                                 Toast.makeText(
                                     context,
                                     "Incorrect login or password.",
@@ -148,7 +149,6 @@ fun LoginPage(
                                 ).show()
                             }
                         } else {
-                            // Wyświetl informację o błędzie
                             Toast.makeText(
                                 context,
                                 "User doesn't exist.",
@@ -165,7 +165,6 @@ fun LoginPage(
 
                 Spacer(modifier = Modifier.padding(20.dp))
 
-                // Dodaj odnośnik do strony rejestracji
                 Text(
                     text = "Create an Account",
                     modifier = Modifier.clickable(onClick = {

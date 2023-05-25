@@ -17,9 +17,9 @@ import com.example.notepad.composable.login_register.RegisterPage
 import com.example.notepad.composable.notes.CreateNote
 import com.example.notepad.composable.notes.EditNote
 import com.example.notepad.composable.notes.NoteDetails
+import com.example.notepad.composable.notes.NoteList
 import com.example.notepad.composable.notes.NotesViewModel
 import com.example.notepad.composable.notes.NotesViewModelFactory
-import com.example.notepad.composable.notes.NoteList
 import com.example.notepad.data.AppDb
 import com.example.notepad.data.notes_data.NotesRepository
 import com.example.notepad.data.user_data.UserRepository
@@ -75,7 +75,7 @@ fun LoginScreen(notesViewModel: NotesViewModel) {
                     it.arguments?.getInt("userId")
                 }
                 if (userId != null) {
-                    NoteList(navController = navController, notesViewModel, userId)
+                    NoteList(navController = navController, notesViewModel,userId)
                 }
             }
 
