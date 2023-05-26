@@ -2,6 +2,8 @@ package com.example.notepad.composable.notes
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -14,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,16 +31,17 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.notepad.Constants
 import com.example.notepad.Constants.orPlaceHolderList
 import com.example.notepad.R
+import com.example.notepad.composable.login_register.UserViewModel
 import com.example.notepad.data.notes_data.Note
 import com.example.notepad.data.notes_data.getDay
 import com.example.notepad.ui.theme.NotepadTheme
-import com.example.notepad.ui.theme.PurpleGrey40
 import com.example.notepad.ui.theme.PurpleGrey80
-import com.example.notepad.ui.theme.primaryColor
+import com.example.notepad.ui.theme.textWhiteColor
 
 @SuppressLint(
     "UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter",
@@ -49,6 +53,10 @@ fun NoteList(
     notesViewModel: NotesViewModel,
     userId: Int
 ) {
+
+    val userViewModel: UserViewModel = viewModel()
+    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val dialogOpen = remember { mutableStateOf(false) }
 
     val deleteText = remember {
         mutableStateOf("")
@@ -75,7 +83,32 @@ fun NoteList(
     val context = LocalContext.current
 
 
+    DisposableEffect(key1 = backPressedDispatcher) {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                dialogOpen.value = true
+            }
+        }
 
+        backPressedDispatcher?.addCallback(callback)
+
+        onDispose {
+            callback.remove()
+        }
+    }
+
+    if (dialogOpen.value) {
+        LogoutDialog(
+            onConfirmLogout = {
+                userViewModel.logout()
+                navController.navigate("login_page")
+                dialogOpen.value = false
+            },
+            onDismiss = {
+                dialogOpen.value = false
+            }
+        )
+    }
 
     NotepadTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = Color.White) {
@@ -155,7 +188,7 @@ fun SearchBar(query: MutableState<String>) {
                 .clip(RoundedCornerShape(12.dp))
                 .fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
-                textColor = Color.Black,
+                textColor = textWhiteColor,
             ),
             trailingIcon = {
                 AnimatedVisibility(
@@ -206,7 +239,12 @@ fun NotesList(
                         .padding(10.dp)
                         .fillMaxWidth()
                 ) {
-                    Text(text = note.getDay(), color = Color.Black, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
+                    Text(
+                        text = note.getDay(),
+                        color = Color.Black,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 18.sp
+                    )
                 }
                 Spacer(
                     modifier = Modifier
@@ -274,29 +312,36 @@ fun NoteListItem(
                 )
 
         ) {
-            Row (modifier = Modifier.fillMaxHeight()){
-                Column (modifier = Modifier.fillMaxHeight()) {
-                    Text(
-                        text = note.title,
-                        color = Color.Black,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp)
-                    )
-                    Text(
-                        text = note.note,
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        maxLines = 3,
-                        modifier = Modifier.padding( horizontal = 12.dp)
-                    )
-                    Text(
-                        text = note.dateUpdated,
-                        fontSize = 14.sp,
-                        color = Color.DarkGray,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
-                    )
-                }
+            Column(
+                modifier = Modifier.weight(1f)
+            ){
+                Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                    text = note.title,
+                    color = Color.Black,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp)
+                )
+                Text(
+                    text = note.note,
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    maxLines = 2,
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(Alignment.BottomEnd)
+            ) {
+                Text(
+                    text = note.dateUpdated,
+                    fontSize = 14.sp,
+                    color = Color.DarkGray,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+                )
             }
         }
     }
@@ -378,3 +423,37 @@ fun DeleteDialog(
         )
     }
 }
+
+@Composable
+fun LogoutDialog(
+    onConfirmLogout: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Logout", fontWeight = FontWeight.Bold)
+        },
+        text = {
+            Text("Are you sure you want to logout?", fontWeight = FontWeight.SemiBold)
+        },
+        confirmButton = {
+            Button(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+                onClick = onConfirmLogout
+            ) {
+                Text("Logout", color = Color.White)
+            }
+        },
+        dismissButton = {
+            Button(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+                onClick = onDismiss
+            ) {
+                Text("Cancel", color = Color.White)
+            }
+        }
+    )
+}
+
+
+
+

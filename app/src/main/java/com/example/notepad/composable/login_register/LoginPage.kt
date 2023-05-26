@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
@@ -39,6 +40,7 @@ import androidx.navigation.NavController
 import com.example.notepad.R
 import com.example.notepad.composable.notes.NotesViewModel
 import com.example.notepad.ui.theme.primaryColor
+import com.example.notepad.ui.theme.textWhiteColor
 import kotlinx.coroutines.runBlocking
 
 @Composable
@@ -114,6 +116,7 @@ fun LoginPage(
                 Spacer(modifier = Modifier.padding(10.dp))
 
                 Button(
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
                     onClick = {
                         userViewModel.logout()
                         val userExists = runBlocking {
@@ -164,7 +167,7 @@ fun LoginPage(
                         .height(50.dp)
                         .clip(CircleShape)
                 ) {
-                    Text(text = "Sign In", fontSize = 20.sp, color = Color.White)
+                    Text(text = "Sign In", fontSize = 20.sp, color = textWhiteColor)
                 }
 
                 Spacer(modifier = Modifier.padding(20.dp))

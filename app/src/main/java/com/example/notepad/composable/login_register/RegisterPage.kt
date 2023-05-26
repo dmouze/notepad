@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
@@ -25,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.notepad.R
 import com.example.notepad.ui.theme.primaryColor
+import com.example.notepad.ui.theme.textWhiteColor
 import kotlinx.coroutines.runBlocking
 
 
@@ -303,8 +307,10 @@ fun RegisterPage(
                             modifier = Modifier
                                 .fillMaxWidth(0.6f)
                                 .height(50.dp)
+                                .clip(CircleShape),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
                         ) {
-                            Text(text = "Sign Up", fontSize = 20.sp, color = Color.White)
+                            Text(text = "Sign Up", fontSize = 20.sp, color = textWhiteColor)
                         }
                     }
                     Spacer(modifier = Modifier.padding(20.dp))
