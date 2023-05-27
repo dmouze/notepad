@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.notepad.Constants
@@ -72,6 +74,7 @@ fun EditNote(
                         onIconClick = {
                             viewModel.updateNote(
                                 Note(
+                                    userId = note.value.userId,
                                     id = note.value.id,
                                     note = currentNote.value,
                                     title = currentTitle.value
@@ -101,7 +104,7 @@ fun EditNote(
                         colors = TextFieldDefaults.textFieldColors(
                             cursorColor = Color.Black,
                             focusedLabelColor = Color.Black,
-                        ),
+                        ), modifier = Modifier.fillMaxWidth(),
                         onValueChange = { value ->
                             currentTitle.value = value
                             if (currentTitle.value != note.value.title) {
@@ -112,7 +115,7 @@ fun EditNote(
                                 saveButtonState.value = false
                             }
                         },
-                        label = { Text(text = "Title") }
+                        label = { Text(text = "Title", fontWeight = FontWeight.SemiBold) }
                     )
 
                     Spacer(modifier = Modifier.padding(12.dp))
@@ -122,7 +125,7 @@ fun EditNote(
                         colors = TextFieldDefaults.textFieldColors(
                             cursorColor = Color.Black,
                             focusedLabelColor = Color.Black,
-                        ),
+                        ),modifier = Modifier.fillMaxWidth(),
                         onValueChange = { value ->
                             currentNote.value = value
                             if (currentNote.value != note.value.note) {
@@ -133,7 +136,7 @@ fun EditNote(
                                 saveButtonState.value = false
                             }
                         },
-                        label = { Text(text = "Body") }
+                        label = { Text(text = "Note", fontWeight = FontWeight.SemiBold) }
                     )
                 }
 

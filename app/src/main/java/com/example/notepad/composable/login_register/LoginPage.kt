@@ -31,6 +31,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -65,17 +67,26 @@ fun LoginPage(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter),
-            contentScale = ContentScale.FillWidth
+            contentScale = ContentScale.Crop
         )
+
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.45f)
+                .fillMaxHeight(0.55f)
                 .background(Color.White)
         ) {
             item {
+                Text(
+                    text = "Login",
+                    fontSize = 30.sp,
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 2.sp
+                    )
+                )
                 OutlinedTextField(
                     value = loginState.value,
                     onValueChange = {
@@ -86,7 +97,7 @@ fun LoginPage(
                     placeholder = { Text(text = "Login name") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(0.88f),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black)
+                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black, focusedBorderColor = Color.Black, focusedLabelColor = Color.Black, cursorColor = Color.Black)
                 )
                 OutlinedTextField(
                     value = passwordState.value,
@@ -111,7 +122,7 @@ fun LoginPage(
                     visualTransformation = if (passwordVisibility.value) VisualTransformation.None
                     else PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(0.88f),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black)
+                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black, focusedBorderColor = Color.Black, focusedLabelColor = Color.Black, cursorColor = Color.Black)
                 )
                 Spacer(modifier = Modifier.padding(10.dp))
 

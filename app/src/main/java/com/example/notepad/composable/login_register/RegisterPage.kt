@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -69,29 +68,25 @@ fun RegisterPage(
     var userExist: Boolean
     var allFields = true
 
-
-
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-        Box(
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.register),
+            contentDescription = null,
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-            contentAlignment = Alignment.TopCenter
-        ) {
-
-            Image(
-                painter = painterResource(id = R.drawable.register), contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.TopCenter),
-                contentScale = ContentScale.FillBounds
-            )
-        }
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 8.dp), // Optionally, add a margin from the top edge
+            contentScale = ContentScale.Crop
+        )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.76f)
-                .background(Color.White),
+                .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -138,7 +133,7 @@ fun RegisterPage(
                             placeholder = { Text(text = "Login") },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(0.8f),
-                            colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black)
+                            colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black, focusedBorderColor = Color.Black, focusedLabelColor = Color.Black)
                         )
 
                         OutlinedTextField(
@@ -162,7 +157,7 @@ fun RegisterPage(
                             placeholder = { Text(text = "Name") },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(0.8f),
-                            colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black)
+                            colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black, focusedBorderColor = Color.Black, focusedLabelColor = Color.Black)
                         )
 
                         OutlinedTextField(
@@ -197,7 +192,7 @@ fun RegisterPage(
                             },
                             visualTransformation = if (passwordVisibility.value) VisualTransformation.None
                             else PasswordVisualTransformation(),
-                            colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black)
+                            colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black, focusedBorderColor = Color.Black, focusedLabelColor = Color.Black)
                         )
 
                         OutlinedTextField(
@@ -233,7 +228,7 @@ fun RegisterPage(
                             },
                             visualTransformation = if (confirmPasswordVisibility.value) VisualTransformation.None
                             else PasswordVisualTransformation(),
-                            colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black)
+                            colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black, focusedBorderColor = Color.Black, focusedLabelColor = Color.Black)
                         )
                         Spacer(modifier = Modifier.padding(10.dp))
                         Button(
@@ -243,7 +238,7 @@ fun RegisterPage(
                                         userViewModel.checkIfUserExists(loginValue.value)
                                 }
 
-                                if (!loginErrorState.value && !nameErrorState.value && !passwordErrorState.value && !confirmPasswordErrorState.value){
+                                if (!loginErrorState.value && !nameErrorState.value && !passwordErrorState.value && !confirmPasswordErrorState.value) {
                                     allFields = true
                                 }
 
@@ -268,7 +263,7 @@ fun RegisterPage(
                                     allFields = false
                                 }
 
-                                if (!allFields){
+                                if (!allFields) {
                                     Toast.makeText(
                                         context,
                                         "Please fill all fields",
@@ -301,6 +296,7 @@ fun RegisterPage(
                                             "User '${nameValue.value}' registered successfully!",
                                             Toast.LENGTH_LONG
                                         ).show()
+                                        navController.navigate("login_page")
                                     }
                                 }
                             },
@@ -328,8 +324,8 @@ fun RegisterPage(
             }
         }
     }
-
 }
+
 
 
 

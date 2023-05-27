@@ -16,7 +16,7 @@ class NotesViewModel(
 
     var userId = mutableStateOf(0)
     val notes = mutableStateOf<List<Note>>(emptyList())
-    var username = ""
+    private var username = ""
 
     init {
         viewModelScope.launch {
@@ -53,6 +53,7 @@ class NotesViewModel(
     fun updateNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.updateNote(note)
+            notes.value = getNotesByUserId(userId.intValue)
         }
     }
 

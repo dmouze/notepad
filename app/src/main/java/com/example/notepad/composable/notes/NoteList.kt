@@ -40,8 +40,6 @@ import com.example.notepad.composable.login_register.UserViewModel
 import com.example.notepad.data.notes_data.Note
 import com.example.notepad.data.notes_data.getDay
 import com.example.notepad.ui.theme.NotepadTheme
-import com.example.notepad.ui.theme.PurpleGrey80
-import com.example.notepad.ui.theme.textWhiteColor
 
 @SuppressLint(
     "UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter",
@@ -140,7 +138,7 @@ fun NoteList(
                     )
                 },
                 floatingActionButton = {
-                    NotesFab(
+                    NotesFloatingActionButton(
                         contentDescription = stringResource(R.string.create_note),
                         action = { navController.navigate("createnote_page") },
                         icon = R.drawable.note_add_icon
@@ -188,7 +186,7 @@ fun SearchBar(query: MutableState<String>) {
                 .clip(RoundedCornerShape(12.dp))
                 .fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
-                textColor = textWhiteColor,
+                textColor = Color.Black, focusedIndicatorColor = Color.Black, focusedLabelColor = Color.Black, cursorColor = Color.Black
             ),
             trailingIcon = {
                 AnimatedVisibility(
@@ -261,7 +259,7 @@ fun NotesList(
                 deleteText = deleteText,
                 navController,
                 notesToDelete = notesToDelete,
-                noteBackGround = PurpleGrey80
+                noteBackGround = Color.Black
             )
 
             Spacer(
@@ -318,14 +316,14 @@ fun NoteListItem(
                 Spacer(modifier = Modifier.height(10.dp))
             Text(
                     text = note.title,
-                    color = Color.Black,
+                    color = Color.White,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp)
                 )
                 Text(
                     text = note.note,
-                    color = Color.Black,
+                    color = Color.White,
                     fontSize = 16.sp,
                     maxLines = 2,
                     modifier = Modifier.padding(horizontal = 12.dp)
@@ -339,7 +337,7 @@ fun NoteListItem(
                 Text(
                     text = note.dateUpdated,
                     fontSize = 14.sp,
-                    color = Color.DarkGray,
+                    color = Color.White,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
                 )
             }
@@ -348,15 +346,15 @@ fun NoteListItem(
 }
 
 @Composable
-fun NotesFab(contentDescription: String, icon: Int, action: () -> Unit) {
+fun NotesFloatingActionButton(contentDescription: String, icon: Int, action: () -> Unit) {
     return FloatingActionButton(
         onClick = { action.invoke() },
-        backgroundColor = MaterialTheme.colors.primary
+        backgroundColor = Color.Black
     ) {
         Icon(
             ImageVector.vectorResource(id = icon),
             contentDescription = contentDescription,
-            tint = Color.Black
+            tint = Color.White
         )
 
     }
