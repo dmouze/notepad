@@ -18,7 +18,7 @@ fun AppBar(
     iconState: MutableState<Boolean>
 ) {
     TopAppBar(
-        title = { Text(title, fontWeight = FontWeight.Bold, fontStyle = FontStyle.Italic) },
+        title = { Text(title, fontWeight = FontWeight.Bold) },
         backgroundColor = Color.White,
         actions = {
             IconButton(
@@ -30,7 +30,6 @@ fun AppBar(
                         icon?.invoke()
                     }
                 }
-
             )
         }
     )

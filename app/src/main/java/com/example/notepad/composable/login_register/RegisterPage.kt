@@ -78,9 +78,10 @@ fun RegisterPage(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight(0.3f)
                 .align(Alignment.CenterHorizontally)
-                .padding(top = 8.dp), // Optionally, add a margin from the top edge
-            contentScale = ContentScale.Crop
+                .padding(top = 8.dp),
+            contentScale = ContentScale.Fit
         )
 
         Column(

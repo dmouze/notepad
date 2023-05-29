@@ -81,7 +81,7 @@ fun NoteDetails(
                         fontWeight = FontWeight.Bold
                     )
                     Text(text = note.value.dateUpdated, Modifier.padding(12.dp), color = Color.Gray)
-                    Text(text = note.value.note, Modifier.padding(12.dp))
+                    Text(text = note.value.note, Modifier.padding(12.dp), fontSize = 20.sp)
                 }
 
             }

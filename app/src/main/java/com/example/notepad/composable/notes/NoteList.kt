@@ -12,6 +12,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.ripple.rememberRipple
@@ -41,6 +42,7 @@ import com.example.notepad.data.notes_data.Note
 import com.example.notepad.data.notes_data.getDay
 import com.example.notepad.ui.theme.NotepadTheme
 
+
 @SuppressLint(
     "UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter",
     "StateFlowValueCalledInComposition"
@@ -55,10 +57,10 @@ fun NoteList(
     val userViewModel: UserViewModel = viewModel()
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val dialogOpen = remember { mutableStateOf(false) }
-
     val deleteText = remember {
         mutableStateOf("")
     }
+
 
     val noteQuery = remember {
         mutableStateOf("")
@@ -80,6 +82,7 @@ fun NoteList(
 
     val context = LocalContext.current
 
+    val sortDateChange = remember { mutableStateOf(true) }
 
     DisposableEffect(key1 = backPressedDispatcher) {
         val callback = object : OnBackPressedCallback(true) {
@@ -148,13 +151,29 @@ fun NoteList(
             ) {
                 Column {
                     SearchBar(noteQuery)
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.sort),
+                            contentDescription = "sort",
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .clickable {
+                                    sortDateChange.value = sortDateChange.value.not()
+                                    notesViewModel.reloadNotes(userId)
+                                }
+                        )
+                    }
                     NotesList(
                         notes = notes.value.orPlaceHolderList(),
                         query = noteQuery,
                         openDialog = openDialog,
                         deleteText = deleteText,
                         navController = navController,
-                        notesToDelete = notesDelete
+                        notesToDelete = notesDelete,
+                        sortDateChange = sortDateChange
                     )
                 }
 
@@ -186,7 +205,10 @@ fun SearchBar(query: MutableState<String>) {
                 .clip(RoundedCornerShape(12.dp))
                 .fillMaxWidth(),
             colors = TextFieldDefaults.textFieldColors(
-                textColor = Color.Black, focusedIndicatorColor = Color.Black, focusedLabelColor = Color.Black, cursorColor = Color.Black
+                textColor = Color.Black,
+                focusedIndicatorColor = Color.Black,
+                focusedLabelColor = Color.Black,
+                cursorColor = Color.Black
             ),
             trailingIcon = {
                 AnimatedVisibility(
@@ -217,15 +239,24 @@ fun NotesList(
     deleteText: MutableState<String>,
     navController: NavController,
     notesToDelete: MutableState<List<Note>>,
+    sortDateChange: MutableState<Boolean>
 ) {
 
     var previousHeader = ""
+    val upSortedNotes = notes.sortedByDescending { it.dateUpdated }
+    val downSortedNotes = notes.sortedBy { it.dateUpdated }
+
+
     LazyColumn(
         contentPadding = PaddingValues(12.dp),
         modifier = Modifier.background(Color.White)
     ) {
         val queriedNotes = if (query.value.isEmpty()) {
-            notes
+            if (sortDateChange.value) {
+                upSortedNotes
+            } else {
+                downSortedNotes
+            }
         } else {
             notes.filter { it.note.contains(query.value) || it.title.contains(query.value) }
         }
@@ -312,9 +343,9 @@ fun NoteListItem(
         ) {
             Column(
                 modifier = Modifier.weight(1f)
-            ){
+            ) {
                 Spacer(modifier = Modifier.height(10.dp))
-            Text(
+                Text(
                     text = note.title,
                     color = Color.White,
                     fontSize = 20.sp,
@@ -349,7 +380,10 @@ fun NoteListItem(
 fun NotesFloatingActionButton(contentDescription: String, icon: Int, action: () -> Unit) {
     return FloatingActionButton(
         onClick = { action.invoke() },
-        backgroundColor = Color.Black
+        backgroundColor = Color.Black,
+        contentColor = Color.White,
+        modifier = Modifier
+            .border(2.dp, Color.White, CircleShape)
     ) {
         Icon(
             ImageVector.vectorResource(id = icon),
@@ -436,14 +470,16 @@ fun LogoutDialog(
             Text("Are you sure you want to logout?", fontWeight = FontWeight.SemiBold)
         },
         confirmButton = {
-            Button(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+            Button(
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
                 onClick = onConfirmLogout
             ) {
                 Text("Logout", color = Color.White)
             }
         },
         dismissButton = {
-            Button(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+            Button(
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
                 onClick = onDismiss
             ) {
                 Text("Cancel", color = Color.White)
@@ -451,7 +487,3 @@ fun LogoutDialog(
         }
     )
 }
-
-
-
-

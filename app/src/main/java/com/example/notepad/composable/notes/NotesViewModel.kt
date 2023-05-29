@@ -39,7 +39,6 @@ class NotesViewModel(
     fun reloadNotes(userId: Int) {
         viewModelScope.launch {
             notes.value = repo.getNotesByUserId(userId)
-            println("reload $userId")
         }
     }
 

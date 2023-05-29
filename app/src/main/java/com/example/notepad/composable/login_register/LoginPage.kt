@@ -1,6 +1,8 @@
 package com.example.notepad.composable.login_register
 
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -22,6 +25,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -39,11 +43,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.notepad.MainActivity
 import com.example.notepad.R
 import com.example.notepad.composable.notes.NotesViewModel
 import com.example.notepad.ui.theme.primaryColor
 import com.example.notepad.ui.theme.textWhiteColor
 import kotlinx.coroutines.runBlocking
+import kotlin.system.exitProcess
 
 @Composable
 fun LoginPage(
@@ -55,6 +61,35 @@ fun LoginPage(
     val passwordState = remember { mutableStateOf("") }
     val passwordVisibility = remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val dialogOpen = remember { mutableStateOf(false) }
+
+
+    DisposableEffect(key1 = backPressedDispatcher) {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                dialogOpen.value = true
+            }
+        }
+        backPressedDispatcher?.addCallback(callback)
+        onDispose {
+            callback.remove()
+        }
+    }
+
+    if (dialogOpen.value) {
+        ExitDialog(
+            onConfirmExit = {
+                dialogOpen.value = false
+                val activity = MainActivity()
+                activity.finish()
+                exitProcess(0)
+            },
+            onDismiss = {
+                dialogOpen.value = false
+            }
+        )
+    }
 
     Box(
         modifier = Modifier
@@ -66,8 +101,9 @@ fun LoginPage(
             painter = painterResource(id = R.drawable.login), contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight(0.45f)
                 .align(Alignment.TopCenter),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Fit
         )
 
         LazyColumn(
@@ -198,4 +234,33 @@ fun LoginPage(
     }
 }
 
+@Composable
+fun ExitDialog(
+    onConfirmExit: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Exit", fontWeight = FontWeight.Bold)
+        },
+        text = {
+            Text("Are you sure you want to exit?", fontWeight = FontWeight.SemiBold)
+        },
+        confirmButton = {
+            Button(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+                onClick = onConfirmExit
+            ) {
+                Text("Exit", color = Color.White)
+            }
+        },
+        dismissButton = {
+            Button(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+                onClick = onDismiss
+            ) {
+                Text("Cancel", color = Color.White)
+            }
+        }
+    )
+}
 
