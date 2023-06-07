@@ -30,12 +30,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.notepad.Constants
-import com.example.notepad.Constants.orPlaceHolderList
 import com.example.notepad.R
 import com.example.notepad.composable.login_register.UserViewModel
 import com.example.notepad.data.notes_data.Note
@@ -167,7 +167,7 @@ fun NoteList(
                         )
                     }
                     NotesList(
-                        notes = notes.value.orPlaceHolderList(),
+                        notes = notes.value,
                         query = noteQuery,
                         openDialog = openDialog,
                         deleteText = deleteText,
@@ -241,249 +241,260 @@ fun NotesList(
     notesToDelete: MutableState<List<Note>>,
     sortDateChange: MutableState<Boolean>
 ) {
-
-    var previousHeader = ""
-    val upSortedNotes = notes.sortedByDescending { it.dateUpdated }
-    val downSortedNotes = notes.sortedBy { it.dateUpdated }
-
-
-    LazyColumn(
-        contentPadding = PaddingValues(12.dp),
-        modifier = Modifier.background(Color.White)
-    ) {
-        val queriedNotes = if (query.value.isEmpty()) {
-            if (sortDateChange.value) {
-                upSortedNotes
-            } else {
-                downSortedNotes
-            }
+    val queriedNotes = if (query.value.isEmpty()) {
+        if (sortDateChange.value) {
+            notes.sortedByDescending { it.dateUpdated }
         } else {
-            notes.filter { it.note.contains(query.value) || it.title.contains(query.value) }
+            notes.sortedBy { it.dateUpdated }
         }
+    } else {
+        notes.filter { it.note.contains(query.value) || it.title.contains(query.value) }
+    }
 
-        itemsIndexed(queriedNotes) { _, note ->
-            if (note.getDay() != previousHeader) {
-                Column(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = note.getDay(),
-                        color = Color.Black,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
+    if (queriedNotes.isEmpty()) {
+        Icon(
+            imageVector = ImageVector.vectorResource(id = R.drawable.question_mark),
+            contentDescription = stringResource(
+                R.string.question
+            ), modifier = Modifier.fillMaxHeight(0.7f).fillMaxWidth()
+        )
+        Text(
+            text = "No notes found. Please add new note.",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            textAlign = TextAlign.Center,
+            fontSize = 20.sp, fontWeight = FontWeight.SemiBold
+        )
+    } else {
+        LazyColumn(
+            contentPadding = PaddingValues(12.dp),
+            modifier = Modifier.background(Color.White)
+        ) {
+            var previousHeader = ""
+            itemsIndexed(queriedNotes) { _, note ->
+                if (note.getDay() != previousHeader) {
+                    Column(
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = note.getDay(),
+                            color = Color.Black,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 18.sp
+                        )
+                    }
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(10.dp)
                     )
+                    previousHeader = note.getDay()
                 }
+
+                NoteListItem(
+                    note,
+                    openDialog,
+                    deleteText = deleteText,
+                    navController,
+                    notesToDelete = notesToDelete,
+                    noteBackGround = Color.Black
+                )
+
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(10.dp)
+                        .height(12.dp)
                 )
-                previousHeader = note.getDay()
             }
-
-
-            NoteListItem(
-                note,
-                openDialog,
-                deleteText = deleteText,
-                navController,
-                notesToDelete = notesToDelete,
-                noteBackGround = Color.Black
-            )
-
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(12.dp)
-            )
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun NoteListItem(
-    note: Note,
-    openDialog: MutableState<Boolean>,
-    deleteText: MutableState<String>,
-    navController: NavController,
-    noteBackGround: Color,
-    notesToDelete: MutableState<List<Note>>
-) {
+        @OptIn(ExperimentalFoundationApi::class)
+        @Composable
+        fun NoteListItem(
+            note: Note,
+            openDialog: MutableState<Boolean>,
+            deleteText: MutableState<String>,
+            navController: NavController,
+            noteBackGround: Color,
+            notesToDelete: MutableState<List<Note>>
+        ) {
 
-    return Box(
-        modifier = Modifier
-            .height(120.dp)
-            .clip(RoundedCornerShape(12.dp))
-    ) {
-        Column(
-            modifier = Modifier
-                .background(noteBackGround)
-                .fillMaxWidth()
-                .height(120.dp)
-                .combinedClickable(interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(bounded = false),
-                    onClick = {
-                        if (note.id != 0) {
-                            navController.navigate(Constants.noteDetailNavigation(note.id))
+            return Box(
+                modifier = Modifier
+                    .height(120.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .background(noteBackGround)
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .combinedClickable(interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(bounded = false),
+                            onClick = {
+                                if (note.id != 0) {
+                                    navController.navigate(Constants.noteDetailNavigation(note.id))
+                                }
+                            },
+                            onLongClick = {
+                                if (note.id != 0) {
+                                    openDialog.value = true
+                                    println(note.id)
+                                    deleteText.value = "Are you sure you want to delete this note ?"
+                                    notesToDelete.value = mutableListOf(note)
+                                }
+                            }
+                        )
+
+                ) {
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            text = note.title,
+                            color = Color.White,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp)
+                        )
+                        Text(
+                            text = note.note,
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            maxLines = 2,
+                            modifier = Modifier.padding(horizontal = 12.dp)
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentSize(Alignment.BottomEnd)
+                    ) {
+                        Text(
+                            text = note.dateUpdated,
+                            fontSize = 14.sp,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+                        )
+                    }
+                }
+            }
+        }
+
+        @Composable
+        fun NotesFloatingActionButton(contentDescription: String, icon: Int, action: () -> Unit) {
+            return FloatingActionButton(
+                onClick = { action.invoke() },
+                backgroundColor = Color.Black,
+                contentColor = Color.White,
+                modifier = Modifier
+                    .border(2.dp, Color.White, CircleShape)
+            ) {
+                Icon(
+                    ImageVector.vectorResource(id = icon),
+                    contentDescription = contentDescription,
+                    tint = Color.White
+                )
+
+            }
+        }
+
+        @Composable
+        fun DeleteDialog(
+            openDialog: MutableState<Boolean>,
+            text: MutableState<String>,
+            action: () -> Unit,
+            notesToDelete: MutableState<List<Note>>
+        ) {
+            if (openDialog.value) {
+                AlertDialog(
+                    onDismissRequest = {
+                        openDialog.value = false
+                    },
+                    title = {
+                        Text(text = "Delete Note")
+                    },
+                    text = {
+                        Column {
+                            Text(text.value)
                         }
                     },
-                    onLongClick = {
-                        if (note.id != 0) {
-                            openDialog.value = true
-                            println(note.id)
-                            deleteText.value = "Are you sure you want to delete this note ?"
-                            notesToDelete.value = mutableListOf(note)
+                    buttons = {
+                        Row(
+                            modifier = Modifier.padding(all = 8.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Column {
+                                Button(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = ButtonDefaults.buttonColors(
+                                        backgroundColor = Color.Black,
+                                        contentColor = Color.White
+                                    ),
+                                    onClick = {
+                                        action.invoke()
+                                        openDialog.value = false
+                                        notesToDelete.value = mutableListOf()
+                                    }
+                                ) {
+                                    Text("Yes")
+                                }
+                                Spacer(modifier = Modifier.padding(12.dp))
+                                Button(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = ButtonDefaults.buttonColors(
+                                        backgroundColor = Color.Black,
+                                        contentColor = Color.White
+                                    ),
+                                    onClick = {
+                                        openDialog.value = false
+                                        notesToDelete.value = mutableListOf()
+                                    }
+                                ) {
+                                    Text("No")
+                                }
+                            }
+
                         }
                     }
                 )
+            }
+        }
 
+        @Composable
+        fun LogoutDialog(
+            onConfirmLogout: () -> Unit,
+            onDismiss: () -> Unit
         ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = note.title,
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp)
-                )
-                Text(
-                    text = note.note,
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    maxLines = 2,
-                    modifier = Modifier.padding(horizontal = 12.dp)
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(Alignment.BottomEnd)
-            ) {
-                Text(
-                    text = note.dateUpdated,
-                    fontSize = 14.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun NotesFloatingActionButton(contentDescription: String, icon: Int, action: () -> Unit) {
-    return FloatingActionButton(
-        onClick = { action.invoke() },
-        backgroundColor = Color.Black,
-        contentColor = Color.White,
-        modifier = Modifier
-            .border(2.dp, Color.White, CircleShape)
-    ) {
-        Icon(
-            ImageVector.vectorResource(id = icon),
-            contentDescription = contentDescription,
-            tint = Color.White
-        )
-
-    }
-}
-
-@Composable
-fun DeleteDialog(
-    openDialog: MutableState<Boolean>,
-    text: MutableState<String>,
-    action: () -> Unit,
-    notesToDelete: MutableState<List<Note>>
-) {
-    if (openDialog.value) {
-        AlertDialog(
-            onDismissRequest = {
-                openDialog.value = false
-            },
-            title = {
-                Text(text = "Delete Note")
-            },
-            text = {
-                Column {
-                    Text(text.value)
-                }
-            },
-            buttons = {
-                Row(
-                    modifier = Modifier.padding(all = 8.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Column {
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color.Black,
-                                contentColor = Color.White
-                            ),
-                            onClick = {
-                                action.invoke()
-                                openDialog.value = false
-                                notesToDelete.value = mutableListOf()
-                            }
-                        ) {
-                            Text("Yes")
-                        }
-                        Spacer(modifier = Modifier.padding(12.dp))
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color.Black,
-                                contentColor = Color.White
-                            ),
-                            onClick = {
-                                openDialog.value = false
-                                notesToDelete.value = mutableListOf()
-                            }
-                        ) {
-                            Text("No")
-                        }
+            AlertDialog(
+                onDismissRequest = onDismiss,
+                title = {
+                    Text(text = "Logout", fontWeight = FontWeight.Bold)
+                },
+                text = {
+                    Text("Are you sure you want to logout?", fontWeight = FontWeight.SemiBold)
+                },
+                confirmButton = {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+                        onClick = onConfirmLogout
+                    ) {
+                        Text("Logout", color = Color.White)
                     }
-
+                },
+                dismissButton = {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+                        onClick = onDismiss
+                    ) {
+                        Text("Cancel", color = Color.White)
+                    }
                 }
-            }
-        )
-    }
-}
-
-@Composable
-fun LogoutDialog(
-    onConfirmLogout: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(text = "Logout", fontWeight = FontWeight.Bold)
-        },
-        text = {
-            Text("Are you sure you want to logout?", fontWeight = FontWeight.SemiBold)
-        },
-        confirmButton = {
-            Button(
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
-                onClick = onConfirmLogout
-            ) {
-                Text("Logout", color = Color.White)
-            }
-        },
-        dismissButton = {
-            Button(
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
-                onClick = onDismiss
-            ) {
-                Text("Cancel", color = Color.White)
-            }
+            )
         }
-    )
-}

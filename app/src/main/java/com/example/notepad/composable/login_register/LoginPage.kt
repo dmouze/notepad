@@ -19,6 +19,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
@@ -32,9 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -63,7 +67,7 @@ fun LoginPage(
     val context = LocalContext.current
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val dialogOpen = remember { mutableStateOf(false) }
-
+    val dialogOpen1 = remember { mutableStateOf(false) }
 
     DisposableEffect(key1 = backPressedDispatcher) {
         val callback = object : OnBackPressedCallback(true) {
@@ -91,12 +95,31 @@ fun LoginPage(
         )
     }
 
+    if (dialogOpen1.value) {
+        LanguageChangeDialog(
+            showDialog = dialogOpen.value,
+            onCloseDialog = {
+                dialogOpen.value = false
+            }
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
         contentAlignment = Alignment.BottomCenter
     ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(id = R.drawable.language),
+            contentDescription = "language",
+            modifier = Modifier
+                .align(alignment = Alignment.TopEnd)
+                .padding(20.dp)
+                .clickable {
+                    dialogOpen1.value = true
+                }
+        )
         Image(
             painter = painterResource(id = R.drawable.login), contentDescription = null,
             modifier = Modifier
@@ -123,6 +146,7 @@ fun LoginPage(
                         letterSpacing = 2.sp
                     )
                 )
+                Spacer(modifier = Modifier.padding(5.dp))
                 OutlinedTextField(
                     value = loginState.value,
                     onValueChange = {
@@ -133,7 +157,12 @@ fun LoginPage(
                     placeholder = { Text(text = "Login name") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(0.88f),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black, focusedBorderColor = Color.Black, focusedLabelColor = Color.Black, cursorColor = Color.Black)
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = Color.Black,
+                        focusedBorderColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        cursorColor = Color.Black
+                    )
                 )
                 OutlinedTextField(
                     value = passwordState.value,
@@ -158,7 +187,12 @@ fun LoginPage(
                     visualTransformation = if (passwordVisibility.value) VisualTransformation.None
                     else PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(0.88f),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = Color.Black, focusedBorderColor = Color.Black, focusedLabelColor = Color.Black, cursorColor = Color.Black)
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = Color.Black,
+                        focusedBorderColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        cursorColor = Color.Black
+                    )
                 )
                 Spacer(modifier = Modifier.padding(10.dp))
 
@@ -248,14 +282,16 @@ fun ExitDialog(
             Text("Are you sure you want to exit?", fontWeight = FontWeight.SemiBold)
         },
         confirmButton = {
-            Button(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+            Button(
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
                 onClick = onConfirmExit
             ) {
                 Text("Exit", color = Color.White)
             }
         },
         dismissButton = {
-            Button(colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+            Button(
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
                 onClick = onDismiss
             ) {
                 Text("Cancel", color = Color.White)
@@ -264,3 +300,52 @@ fun ExitDialog(
     )
 }
 
+@Composable
+fun LanguageChangeDialog(
+    showDialog: Boolean,
+    onCloseDialog: () -> Unit
+) {
+    val languageOptions = listOf("English", "Polski")
+    val selectedLanguage = remember { mutableStateOf(languageOptions[0]) }
+
+    AlertDialog(
+        onDismissRequest = onCloseDialog,
+        title = {
+            Text(text = "Change Language", fontWeight = FontWeight.Bold)
+        },
+        text = {
+            DropdownMenu(
+                expanded = showDialog,
+                onDismissRequest = onCloseDialog
+            ) {
+                languageOptions.forEach { language ->
+                    DropdownMenuItem(onClick = {
+                        selectedLanguage.value = language
+                        //bedzie kod
+                    }) {
+                        Text(text = language)
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+                onClick = {
+                    //bedzie kod
+                    onCloseDialog()
+                }
+            ) {
+                Text("Confirm", color = Color.White)
+            }
+        },
+        dismissButton = {
+            Button(
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black),
+                onClick = onCloseDialog
+            ) {
+                Text("Cancel", color = Color.White)
+            }
+        }
+    )
+}

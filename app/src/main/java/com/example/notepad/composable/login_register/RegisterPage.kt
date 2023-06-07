@@ -106,7 +106,7 @@ fun RegisterPage(
                         )
 
                     )
-                    Spacer(modifier = Modifier.padding(20.dp))
+                    Spacer(modifier = Modifier.padding(5.dp))
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         OutlinedTextField(
                             value = loginValue.value,
