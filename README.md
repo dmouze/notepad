@@ -19,7 +19,7 @@ Before running the app, make sure you have the following:
 ## Setup
 1. Clone the repository:
    ```
-   git clone [https://github.com/your-username/notepad-app.git](https://github.com/dmouze/notepad)
+   git clone https://github.com/dmouze/notepad
    ```
    
 3. Open the project in Android Studio.
